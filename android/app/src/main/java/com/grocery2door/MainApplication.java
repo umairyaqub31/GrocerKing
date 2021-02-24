@@ -1,4 +1,4 @@
-package com.rnv5;
+package com.grocery2door;
 
 import android.app.Application;
 import android.content.Context;

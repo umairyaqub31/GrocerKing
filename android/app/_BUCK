@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.rnv5",
+    package = "com.grocery2door",
 )
 
 android_resource(
     name = "res",
-    package = "com.rnv5",
+    package = "com.grocery2door",
     res = "src/main/res",
 )
 

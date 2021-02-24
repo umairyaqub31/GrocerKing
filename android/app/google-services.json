@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "506661724081",
+    "project_id": "grocery-king-302815",
+    "storage_bucket": "grocery-king-302815.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506661724081:android:422fabbd7300dcff41e790",
+        "android_client_info": {
+          "package_name": "com.grocery2door"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "506661724081-g211htui4ri138b02ljj4abv844r17l5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grocery2door",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "506661724081-42tucq1roe7t92d65iuaa472orfobqu0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAX8_DtrIbUwn73_WJlXwRs9xaFJtJ9NSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "506661724081-42tucq1roe7t92d65iuaa472orfobqu0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

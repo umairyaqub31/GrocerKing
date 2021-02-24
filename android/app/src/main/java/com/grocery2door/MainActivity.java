@@ -1,4 +1,4 @@
-package com.rnv5;
+package com.grocery2door;
 
 import com.facebook.react.ReactActivity;
 

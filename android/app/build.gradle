@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.rnv5"
+        applicationId "com.grocery2door"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -208,3 +208,6 @@ project.ext.vectoricons = [
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
