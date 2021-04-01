@@ -1,32 +1,19 @@
 import {combineReducers} from 'redux';
 
-// ## Generator Reducer Imports
-// import app from '../modules/AppState';
-
-// import authReducer from './reducers/authReducer';
 import userReducer from './reducers/userReducer';
-// import errorReducer from './reducers/errorReducer';
-// import notificationReducer from './reducers/notificationReducer';
-// import fuelReducer from './reducers/fuelReducer';
-// import lmsReducer from './reducers/lmsReducer';
-// import temperatureReducer from './reducers/temperatureReducer';
-// import coldChainReducer from './reducers/coldChainReducer';
-// import emReducer from './reducers/energyReducer';
-// import tankReducer from './reducers/tankReducer';
-// import envReducer from './reducers/envReducer';
+import categoryReducer from './reducers/categoryReducer';
+import promotionReducer from './reducers/promotionReducer';
+import productReducer from './reducers/productReducer';
+import cartReducer from './reducers/cartReducer';
+import wishlistReducer from './reducers/wishlistReducer';
+import chatReducer from './reducers/chatReducer';
 
 export default combineReducers({
-  // ## Generator Reducers
-  // app,
-  // auth: authReducer,
   user: userReducer,
-  // error: errorReducer,
-  // notification: notificationReducer,
-  // fuel: fuelReducer,
-  // lms: lmsReducer,
-  // temperature: temperatureReducer,
-  // coldchain: coldChainReducer,
-  // energy: emReducer,
-  // tank: tankReducer,
-  // env: envReducer
+  category: categoryReducer,
+  promotion: promotionReducer,
+  product: productReducer,
+  cart: cartReducer,
+  wishlist: wishlistReducer,
+  chat: chatReducer,
 });

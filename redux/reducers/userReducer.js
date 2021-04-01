@@ -1,22 +1,46 @@
-import { USER_LOADING, GET_USERS } from '../actions/types';
-
 const initState = {
-  users: [],
+  user: null,
   isLoading: false,
+  setUser: null,
+  signedUp: false,
+  address: null,
+  location: null,
 };
 
 const userReducer = (state = initState, action) => {
   switch (action.type) {
-    case GET_USERS:
+    case 'ADD_USER':
+      if (state.user === null) {
+        return {
+          ...state,
+          user: action.payload,
+        };
+      } else {
+        return {
+          ...state,
+        };
+      }
+    case 'SET_USER':
       return {
         ...state,
-        users: action.payload,
-        isLoading: false,
+        setUser: action.payload,
       };
-    case USER_LOADING:
+    case 'SET_ADDRESS':
+      console.log('reducer', action.payload);
       return {
         ...state,
-        isLoading: true,
+        address: action.payload,
+      };
+    case 'SET_LOCATION':
+      return {
+        ...state,
+        location: action.payload,
+      };
+    case 'UPDATE_USER':
+      console.log('update');
+      return {
+        ...state,
+        signedUp: true,
       };
     default:
       return state;

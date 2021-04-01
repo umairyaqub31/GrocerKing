@@ -17,47 +17,58 @@ import {
   DarkTheme as NavigationDarkTheme,
 } from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import SignUpStackScreen from './screens/SignUpStackScreen';
 
 import {
   Provider as PaperProvider,
   DefaultTheme as PaperDefaultTheme,
   DarkTheme as PaperDarkTheme,
 } from 'react-native-paper';
-
 import {DrawerContent} from './screens/DrawerContent';
-
-import MainTabScreen from './screens/MainTabScreen';
-import SupportScreen from './screens/SupportScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import BookmarkScreen from './screens/BookmarkScreen';
-
 import {AuthContext} from './components/context';
-
-import RootStackScreen from './screens/RootStackScreen';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {Provider} from 'react-redux';
+import {Provider, useDispatch} from 'react-redux';
 import {store, persistor} from './redux/store';
 import {PersistGate} from 'redux-persist/integration/react';
+import MainStack from './screens/MainStack';
+import Auth from './screens/Auth/Auth';
 
 const Drawer = createDrawerNavigator();
 
 const App = () => {
-  const [user, setUser] = useState();
   const [initializing, setInitializing] = useState(true);
   // const [isLoading, setIsLoading] = React.useState(true);
   // const [userToken, setUserToken] = React.useState(null);
-
+  // const dis = useDispatch();
   const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const state = store.getState();
+  const [User, setUser] = useState(state.user.user);
 
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) {
-      setInitializing(false);
-    }
-  }
+  // useEffect(() => {
+  //   store.dispatch({type: 'SET_USER', payload: setUser});
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log('heere');
+  //   if (User !== null) {
+  //     User.reload();
+  //   }
+  // }, [state.user.signedUp]);
+
+  // function onAuthStateChanged(user) {
+  //   if (user) {
+  //     user.reload();
+  //   }
+  //   store.dispatch({type: 'ADD_USER', payload: user});
+  //   setUser(user);
+  //   if (initializing) {
+  //     setInitializing(false);
+  //   }
+  // }
 
   const initialLoginState = {
     isLoading: true,
@@ -71,7 +82,7 @@ const App = () => {
     colors: {
       ...NavigationDefaultTheme.colors,
       ...PaperDefaultTheme.colors,
-      background: '#ffffff',
+      background: '#f5f5f5',
       text: '#333333',
     },
   };
@@ -164,10 +175,10 @@ const App = () => {
     [],
   );
 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, [onAuthStateChanged]);
+  // useEffect(() => {
+  //   const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+  //   return subscriber; // unsubscribe on unmount
+  // }, [onAuthStateChanged]);
 
   // if (user === null) {
   //   console.log('here');
@@ -181,25 +192,11 @@ const App = () => {
     <Provider store={store}>
       <PaperProvider theme={theme}>
         <AuthContext.Provider value={authContext}>
-          <NavigationContainer theme={theme}>
-            {user !== null ? (
-              <Drawer.Navigator
-                drawerContent={props => <DrawerContent {...props} />}>
-                <Drawer.Screen name="HomeDrawer" component={MainTabScreen} />
-                <Drawer.Screen name="SupportScreen" component={SupportScreen} />
-                <Drawer.Screen
-                  name="SettingsScreen"
-                  component={SettingsScreen}
-                />
-                <Drawer.Screen
-                  name="BookmarkScreen"
-                  component={BookmarkScreen}
-                />
-              </Drawer.Navigator>
-            ) : (
-              <RootStackScreen />
-            )}
-          </NavigationContainer>
+          <SafeAreaProvider>
+            <NavigationContainer theme={theme}>
+              <Auth />
+            </NavigationContainer>
+          </SafeAreaProvider>
         </AuthContext.Provider>
       </PaperProvider>
     </Provider>

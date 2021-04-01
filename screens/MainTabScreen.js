@@ -5,16 +5,19 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import HomeScreen from './HomeScreen';
+import HomeScreen from './Home/HomeScreen';
 import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
-import ProductScreen from './ProductScreen';
-import CategoryScreen from './CategoryScreen';
+import ProductScreen from './Product/ProductDetailScreen';
+import CategoryScreen from './Category/CategoryScreen';
+import SignUpScreen from './SignUpScreen';
+import ProductListScreen from './Product/ProductsList';
+import CartScreen from './Cart/Cart';
+import WishListScreen from './WishList/WishList';
 
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
-const ProductStack = createStackNavigator();
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -93,6 +96,14 @@ const HomeStackScreen = ({navigation}) => (
             onPress={() => navigation.openDrawer()}
           />
         ),
+        headerRight: () => (
+          <Icon.Button
+            name="ios-cart-outline"
+            size={25}
+            backgroundColor="#009387"
+            onPress={() => navigation.navigate('Cart')}
+          />
+        ),
       }}
     />
     <HomeStack.Screen
@@ -115,6 +126,51 @@ const HomeStackScreen = ({navigation}) => (
       component={CategoryScreen}
       options={{
         title: 'Category',
+        headerLeft: () => (
+          <Icon.Button
+            name="ios-menu"
+            size={25}
+            backgroundColor="#009387"
+            onPress={() => navigation.openDrawer()}
+          />
+        ),
+      }}
+    />
+    {/* <HomeStack.Screen
+      name="Cart"
+      component={CartScreen}
+      options={{
+        title: 'Cart',
+        headerLeft: () => (
+          <Icon.Button
+            name="ios-menu"
+            size={25}
+            backgroundColor="#009387"
+            onPress={() => navigation.openDrawer()}
+          />
+        ),
+      }}
+    /> */}
+    {/* <HomeStack.Screen
+      name="WishList"
+      component={WishListScreen}
+      options={{
+        title: 'Wishlist',
+        headerLeft: () => (
+          <Icon.Button
+            name="ios-menu"
+            size={25}
+            backgroundColor="#009387"
+            onPress={() => navigation.openDrawer()}
+          />
+        ),
+      }}
+    /> */}
+    <HomeStack.Screen
+      name="ProductListScreen"
+      component={ProductListScreen}
+      options={{
+        title: 'Products',
         headerLeft: () => (
           <Icon.Button
             name="ios-menu"
@@ -155,32 +211,3 @@ const DetailsStackScreen = ({navigation}) => (
     />
   </DetailsStack.Navigator>
 );
-
-// const ProductStackScreen = ({navigation}) => (
-//   <ProductStack.Navigator
-//     screenOptions={{
-//       headerStyle: {
-//         backgroundColor: '#009387',
-//       },
-//       headerTintColor: '#fff',
-//       headerTitleStyle: {
-//         fontWeight: 'bold',
-//       },
-//     }}>
-//     <ProductStack.Screen
-//       name="ProductScreen"
-//       component={ProductScreen}
-//       options={{
-//         title: 'Overview',
-//         headerLeft: () => (
-//           <Icon.Button
-//             name="ios-menu"
-//             size={25}
-//             backgroundColor="#009387"
-//             onPress={() => navigation.openDrawer()}
-//           />
-//         ),
-//       }}
-//     />
-//   </ProductStack.Navigator>
-// );
