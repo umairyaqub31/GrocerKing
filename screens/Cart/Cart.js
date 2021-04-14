@@ -48,11 +48,11 @@ const CartScreen = ({navigation}) => {
         />
       </View>
       <View style={styles.buttonView}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.button, {backgroundColor: '#939ba4'}]}
           onPress={close}>
           <Text style={styles.btnText}>Close</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={[
             styles.button,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     height: 90,
     // backgroundColor: 'red',
     //   borderRadius: 100,
-    flexDirection: 'row',
+    // flexDirection: 'row',
     paddingHorizontal: wp('7%'),
   },
   button: {

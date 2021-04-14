@@ -27,6 +27,10 @@ const productReducer = (state = initState, action) => {
         const index = state.products.findIndex(p => p.id === action.payload.id);
         draft.products[index] = action.payload;
       });
+    case 'EMPTY_PRODUCTS':
+      return produce(state, draft => {
+        draft.products = [];
+      });
     default:
       return state;
   }

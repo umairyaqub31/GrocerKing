@@ -6,7 +6,6 @@ import {
   Alert,
   ActivityIndicator,
   TouchableOpacity,
-  Image,
   TextInput,
 } from 'react-native';
 import MapView from 'react-native-maps';
@@ -19,6 +18,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {SignUp} from '../../redux/actions/authActions';
 const marker = require('../../assets/icons8-marker.png');
+import {Image} from 'react-native-elements';
 
 const CheckoutLocationScreen = props => {
   const [location, setLocation] = useState(null);
@@ -58,7 +58,11 @@ const CheckoutLocationScreen = props => {
           onRegionChangeComplete={onRegionChange}
         />
         <View style={styles.markerFixed}>
-          <Image style={styles.marker} source={marker} />
+          <Image
+            style={styles.marker}
+            source={marker}
+            PlaceholderContent={<ActivityIndicator />}
+          />
         </View>
 
         <TextInput

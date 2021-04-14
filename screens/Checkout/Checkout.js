@@ -8,6 +8,8 @@ import {
   Platform,
   Button,
   TextInput,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {Card, Divider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
@@ -27,6 +29,9 @@ import moment from 'moment';
 import {checkOutAction, verifyVoucher} from '../../redux/actions/cartActions';
 import {ScrollView} from 'react-native';
 import {Colors} from '../../styles';
+import ToggleSwitch from 'toggle-switch-react-native';
+import firestore from '@react-native-firebase/firestore';
+import axios from 'axios';
 
 const CheckoutScreen = ({navigation}) => {
   const [date, setDate] = useState(new Date(1598051730000));
@@ -59,26 +64,95 @@ const CheckoutScreen = ({navigation}) => {
       label: 'Schedule',
     },
   ]);
+  const user = useSelector(state => state.user.user);
   const [selectedType, setSelectedType] = useState('ASAP');
-  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(
+    user.phoneNumber !== null ? user.phoneNumber : null,
+  );
   const [vCode, setVCode] = useState(null);
   const [total, setTotal] = useState(null);
   const [grandTotal, setGrandTotal] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(null);
+  const [toggleState, setToggleState] = useState(false);
+  const [timeSlot, setTimeSlot] = useState(null);
+  const [cashBack, setCashBack] = useState(0);
 
   const dispatch = useDispatch();
 
   const address = useSelector(state => state.user.address);
   const cart = useSelector(state => state.cart.cart);
-  const user = useSelector(state => state.user.user);
+
   const location = useSelector(state => state.user.location);
+  const orderSendLoading = useSelector(state => state.cart.orderSendLoading);
+  const orderSend = useSelector(state => state.cart.orderSend);
+  const orderData = useSelector(state => state.cart.orderData);
+  const balance = useSelector(state => state.wallet.balance);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
     setDate(currentDate);
   };
+  const walletControl = isOn => {
+    console.log(isOn);
+    setToggleState(isOn);
+    if (isOn === true) {
+      setCashBack(balance);
+      setGrandTotal(grandTotal - balance);
+    } else {
+      setGrandTotal(grandTotal + balance);
+      setCashBack(0);
+    }
+  };
+  // useEffect(() => {
+  //   if (orderSend === true) {
+  //     showAlert();
+  //   }
+  // }, [orderSend]);
 
+  useEffect(() => {
+    if (orderData !== null) {
+      if (orderData.slot === 'slot1') {
+        setTimeSlot('09:00 - 12:00 AM');
+      } else if (orderData.slot === 'slot2') {
+        setTimeSlot('12:00 - 03:00 PM');
+      } else if (orderData.slot === 'slot3') {
+        setTimeSlot('03:00 - 06:00 PM');
+      } else if (orderData.slot === 'slot4') {
+        setTimeSlot('06:00 - 09:00 PM');
+      }
+    }
+  }, [orderData]);
+
+  const showAlert = (day, sl) => {
+    Alert.alert('Order Sent!', `Your order wiil arive at ${day} on ${sl}`, [
+      {
+        text: 'OK',
+        onPress: () => {
+          closeAlert();
+        },
+      },
+    ]);
+  };
+
+  const closeAlert = async () => {
+    dispatch({type: 'ORDER_SEND_RESET'});
+    if (cashBack > 0) {
+      await firestore()
+        .collection('wallet')
+        .doc(user.uid)
+        .update({
+          balance: 0,
+        });
+
+      dispatch({
+        type: 'ADD_FUNDS',
+        payload: 0,
+      });
+
+      setCashBack(0);
+    }
+  };
   const showMode = currentMode => {
     setShow(true);
     setMode(currentMode);
@@ -95,29 +169,62 @@ const CheckoutScreen = ({navigation}) => {
     setPhoneNumber(num);
   };
 
-  const onChangeVoucher = code => {
-    setVCode(code);
-  };
   useEffect(() => {
     caculateTotalPrice();
   }, [cart]);
 
-  const handleCheckOut = () => {
+  const handleCheckOut = async () => {
     console.log('checkOut Pressed');
     // console.log(cart, user, location, address, selectedType);
-    dispatch(
-      checkOutAction(
+    if (phoneNumber === null) {
+      Alert.alert('Phone Number Required!', 'Enter your valid phone number.', [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]);
+    } else {
+      dispatch({
+        type: 'ORDER_SEND_LOADING',
+      });
+      const config = {
+        headers: {
+          'Content-type': 'Application/json',
+        },
+      };
+
+      const body = {
         cart,
-        user.uid,
-        phoneNumber,
-        location.lat,
-        location.lng,
+        user_id: user.uid,
+        user_phoneNo: user.phoneNumber,
+        lat: location.lat,
+        lng: location.lng,
         address,
-        null,
-        grandTotal,
-        selectedType,
-      ),
-    );
+        voucher: null,
+        total: grandTotal,
+        scheduleType: selectedType,
+      };
+
+      const res = await axios.post(
+        'https://us-central1-grocery-king-302815.cloudfunctions.net/api/orders',
+        body,
+        config,
+      );
+
+      dispatch({
+        type: 'ORDER_SEND',
+        payload: res.data,
+      });
+
+      let sl = null;
+      if (res.data.slot === 'slot1') {
+        sl = '09:00 - 12:00 AM';
+      } else if (res.data.slot === 'slot2') {
+        sl = '12:00 - 03:00 PM';
+      } else if (res.data.slot === 'slot3') {
+        sl = '03:00 - 06:00 PM';
+      } else if (res.data.slot === 'slot4') {
+        sl = '06:00 - 09:00 PM';
+      }
+      showAlert(res.data.day, sl);
+    }
   };
 
   const caculateTotalPrice = () => {
@@ -134,16 +241,15 @@ const CheckoutScreen = ({navigation}) => {
 
     if (tot >= 2000) {
       setDeliveryFee(0);
-      setGrandTotal(tot);
+      setGrandTotal(tot - cashBack);
     } else {
       setDeliveryFee(100);
-      setGrandTotal(tot + 100);
+      setGrandTotal(tot + 100 - cashBack);
     }
   };
 
   const handleVerifyVoucher = () => {
-    console.log('verify');
-    verifyVoucher(cart, vCode);
+    navigation.navigate('Vouchers');
   };
 
   return (
@@ -172,12 +278,27 @@ const CheckoutScreen = ({navigation}) => {
               style={{position: 'absolute', right: 10}}
             />
           </View>
-          <TextInput
-            style={{borderBottomWidth: 1, marginLeft: wp('5%')}}
-            onChangeText={num => onChangePhoneNumber(num)}
-            placeholder="Enter Phone Number"
-            // value={'03038285110'}
-          />
+          {user !== null && user.isAnonymous ? (
+            <TextInput
+              style={{borderBottomWidth: 1, marginLeft: wp('5%')}}
+              onChangeText={num => onChangePhoneNumber(num)}
+              placeholder="Enter Phone Number"
+              // value={user.phoneNumber}
+            />
+          ) : (
+            <TextInput
+              style={{
+                borderBottomWidth: 1,
+                marginLeft: wp('5%'),
+                color: '#000',
+              }}
+              // onChangeText={num => onChangePhoneNumber(num)}
+              // placeholder="Enter Phone Number"
+              editable={false}
+              selectTextOnFocus={false}
+              value={user !== null ? phoneNumber : null}
+            />
+          )}
         </Card>
 
         <RadioButtonRN
@@ -252,26 +373,33 @@ const CheckoutScreen = ({navigation}) => {
           </>
         )}
 
-        <Text style={{marginTop: hp('3%')}}>Voucher</Text>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             paddingHorizontal: wp('5%'),
+            marginTop: hp('3%'),
+            alignItems: 'center',
           }}>
-          <TextInput
-            placeholder="Enter Voucher code"
-            style={{borderBottomWidth: 1, width: wp('50%')}}
-            onChangeText={code => onChangeVoucher(code)}
-          />
+          <View>
+            <ToggleSwitch
+              isOn={toggleState}
+              onColor="green"
+              offColor="red"
+              label="Use Wallet"
+              labelStyle={{color: 'black', fontWeight: '900'}}
+              size="small"
+              onToggle={isOn => walletControl(isOn)}
+            />
+          </View>
 
           <TouchableOpacity
             onPress={handleVerifyVoucher}
             style={{justifyContent: 'center'}}>
             <LinearGradient
               colors={[Colors.primaryLight, Colors.primary]}
-              style={[styles.orderBtn, {width: wp('20%'), height: hp('4%')}]}>
-              <Text style={styles.btnText}>Verify</Text>
+              style={[styles.orderBtn, {width: wp('30%'), height: hp('4%')}]}>
+              <Text style={styles.btnText}>Use Voucher</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -308,6 +436,10 @@ const CheckoutScreen = ({navigation}) => {
             <Text>{deliveryFee}</Text>
           </View>
           <View style={styles.totalSubView}>
+            <Text>Wallet Funds</Text>
+            <Text>{cashBack}</Text>
+          </View>
+          <View style={styles.totalSubView}>
             <Text>Discount Type</Text>
             <Text>Sub Total</Text>
           </View>
@@ -328,7 +460,11 @@ const CheckoutScreen = ({navigation}) => {
         <LinearGradient
           colors={[Colors.primaryLight, Colors.primary]}
           style={styles.orderBtn}>
-          <Text style={styles.btnText}>Place Order</Text>
+          {orderSendLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.btnText}>Place Order</Text>
+          )}
         </LinearGradient>
       </TouchableOpacity>
     </View>

@@ -26,6 +26,8 @@ import {
   addToCart,
   updateQuantity,
 } from '../../redux/actions/cartActions';
+import SliderView from './Slider';
+import {ScrollView} from 'react-native-gesture-handler';
 const ProductScreen = props => {
   const {navigation, route} = props;
   const [Data, setData] = useState([1, 2, 3, 4, 5, 6, 7]);
@@ -70,25 +72,27 @@ const ProductScreen = props => {
       setIndex(-1);
       dispatch(removeFromCart(product.item.id));
     } else {
-      dispatch(updateQuantity(quantity, product.item.id));
+      if (product.item.limit < quantity) {
+        dispatch(updateQuantity(product.item.limit, product.item.id));
+      } else {
+        dispatch(updateQuantity(quantity, product.item.id));
+      }
     }
   };
   return (
-    <View style={styles.container}>
-      <View style={{height: 200, marginTop: '4%'}}>
-        {/* <Slideshow
-          dataSource={[
-            {url: product.item.images[0].image},
-            // {url: product.item.images[1].image},
-            // {url: product.item.images[2].image},
-          ]}
-          height={350}
-        /> */}
+    <ScrollView style={styles.container}>
+      <View
+        style={{
+          marginTop: '4%',
+          backgroundColor: 'transparent',
+          paddingVertical: 10,
+        }}>
+        <SliderView product={product} />
       </View>
       <View
         style={{
           flexDirection: 'row',
-          marginTop: 170,
+          marginTop: hp('2%'),
           marginHorizontal: 20,
           justifyContent: 'space-between',
         }}>
@@ -119,7 +123,7 @@ const ProductScreen = props => {
           )}
         </View>
       </View>
-      <View style={{height: 310, borderRadius: 5}}>
+      <View style={{flex: 1, borderRadius: 5}}>
         <Text style={styles.heading}>More Items</Text>
         {productsLoading ? (
           <View>
@@ -159,7 +163,7 @@ const ProductScreen = props => {
           </View>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -176,6 +180,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 15,
     marginVertical: 10,
+    marginTop: hp('3%'),
   },
   btn: {
     backgroundColor: 'green',
@@ -184,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     // marginBottom: 20,
-    marginTop: 10,
+    marginTop: hp('5%'),
   },
   btnText: {
     color: '#fff',
@@ -197,7 +202,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: wp('25%'),
     alignSelf: 'center',
-    marginTop: hp('2%'),
+    marginTop: hp('5%'),
   },
   button: {
     height: 35,

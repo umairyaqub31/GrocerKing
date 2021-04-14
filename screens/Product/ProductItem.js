@@ -1,27 +1,94 @@
-import React, {Component} from 'react';
-import {TouchableOpacity, Image, View, Text, StyleSheet} from 'react-native';
+import React, {Component, useEffect, useState} from 'react';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {
+  addToCart,
+  updateQuantity,
+  removeFromCart,
+} from '../../redux/actions/cartActions';
+import Icon from 'react-native-vector-icons/Feather';
+import {Image} from 'react-native-elements';
+
 const ProductItem = props => {
   const {item} = props;
+  const dispatch = useDispatch();
+  const [Index, setIndex] = useState(-1);
+  const cart = useSelector(state => state.cart.cart);
+  useEffect(() => {
+    const index = cart.findIndex(p => p.product.id === item.id);
+    setIndex(index);
+  }, [cart, item.id]);
+
+  const addItem = () => {
+    dispatch(addToCart(item, 1));
+  };
+
+  const update_quantity = quantity => {
+    console.log('quantity', quantity);
+    if (quantity === 0) {
+      setIndex(-1);
+      dispatch(removeFromCart(item.id));
+    } else {
+      if (item.limit < quantity) {
+        dispatch(updateQuantity(item.limit, item.id));
+      } else {
+        dispatch(updateQuantity(quantity, item.id));
+      }
+    }
+  };
+
   return (
     <View style={styles.container} onPress={() => console.log('Pressed')}>
-      <Image style={styles.image} source={{uri: item.images[0].image}} />
-      <View>
-        <Text style={styles.text}>{item.product_name}</Text>
+      <Image
+        style={styles.image}
+        source={{uri: item.images[0].image}}
+        PlaceholderContent={<ActivityIndicator />}
+      />
+      <View style={{marginLeft: wp('2%')}}>
+        <Text
+          ellipsizeMode="tail"
+          numberOfLines={1}
+          style={[styles.text, {marginRight: wp('50%')}]}>
+          {item.product_name}
+        </Text>
         <Text style={styles.text}>{item.price}</Text>
         {/* <Text style={{marginLeft: 15, fontSize: 15, color: 'gray'}}>
             Fruits Vegitables Potato Tomato
           </Text> */}
       </View>
 
-      <View style={styles.buttonView}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.btnText}>Add To Cart</Text>
-        </TouchableOpacity>
-      </View>
+      {Index === -1 ? (
+        <View style={styles.buttonView}>
+          <TouchableOpacity style={styles.button} onPress={addItem}>
+            <Text style={styles.btnText}>Add To Cart</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.buttonView}>
+          <TouchableOpacity
+            style={styles.button1}
+            onPress={() => update_quantity(cart[Index].quantity - 1)}>
+            <Icon name="minus" size={30} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.text}>{cart[Index].quantity}</Text>
+          <TouchableOpacity
+            style={styles.button1}
+            onPress={() => update_quantity(cart[Index].quantity + 1)}>
+            <Icon name="plus" size={30} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -58,6 +125,14 @@ const styles = StyleSheet.create({
     width: wp('25%'),
     borderRadius: 5,
     backgroundColor: '#febd00',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button1: {
+    height: 35,
+    width: 35,
+    borderRadius: 17.5,
+    backgroundColor: '#939ba4',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -21,9 +21,9 @@ const promotionReducer = (state = initState, action) => {
         draft.promotion.push(action.payload);
       });
     case 'EMPTY_PROMOTIONS':
-    return produce(state, draft => {
-      draft.promotion = [];
-    });
+      return produce(state, draft => {
+        draft.promotion = [];
+      });
     default:
       return state;
   }

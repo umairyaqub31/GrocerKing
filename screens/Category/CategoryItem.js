@@ -5,21 +5,18 @@ import {
   Text,
   Button,
   StyleSheet,
-  Image,
   TouchableOpacity,
+  ActivityIndicator,
+  Image,
 } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import Grid from './Grid';
+// import {Image} from 'react-native-elements';
 // import storage from '@react-native-firebase/storage';
 const CategoryItem = props => {
   const {item, navigation} = props;
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [items, setItems] = React.useState([
-    {name: 'TURQUOISE', code: '#1abc9c'},
-    {name: 'EMERALD', code: '#2ecc71'},
-    {name: 'PETER RIVER', code: '#3498db'},
-  ]);
   // console.log('Category', item);
   const control = () => {
     if (item.subcategories.length > 0) {
@@ -35,8 +32,9 @@ const CategoryItem = props => {
     <View>
       <TouchableOpacity style={styles.container} onPress={control}>
         <Image
-          style={{width: '20%', height: '50%'}}
+          style={{width: '22%', height: '50%'}}
           source={{uri: item.image.image}}
+          // PlaceholderContent={<ActivityIndicator />}
         />
         <View>
           <Text style={styles.text}>{item.category_name}</Text>
@@ -46,7 +44,11 @@ const CategoryItem = props => {
         </View>
       </TouchableOpacity>
       <Collapsible collapsed={isCollapsed} style={{flex: 1}}>
-        <Grid subcategories={item.subcategories} navigation={navigation} />
+        <Grid
+          subcategories={item.subcategories}
+          navigation={navigation}
+          mainId={item.category_id}
+        />
       </Collapsible>
     </View>
   );
@@ -56,7 +58,7 @@ export default CategoryItem;
 
 const styles = StyleSheet.create({
   container: {
-    height: 100,
+    height: 170,
     marginVertical: 2,
     paddingHorizontal: 20,
     alignItems: 'center',
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
     // borderBottomWidth:1,
     // borderTopWidth:1
   },
-  text: {marginLeft: 15, fontSize: 20},
+  text: {marginLeft: 20, fontSize: 23},
   gridView: {
     marginTop: 10,
     flex: 1,

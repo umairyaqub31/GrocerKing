@@ -15,6 +15,10 @@ import ClubScreen from './Club/Club';
 import CheckoutScreen from './Checkout/Checkout';
 import CheckoutLocationScreen from './Checkout/CheckoutLocation';
 import PromotionScreen from './Promotions/Promotions';
+import OrderScreen from './Orders/Orders';
+import OrderDetailsScreen from './Orders/OrderDetails';
+import VoucherScreen from './Vouchers/Vouchers';
+import ProductSubListScreen from './Product/ProductSubList';
 
 import {DrawerContent} from './DrawerContent';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -33,6 +37,8 @@ const ClubStack = createStackNavigator();
 const CheckoutStack = createStackNavigator();
 const ChatStack = createStackNavigator();
 const PromotionStack = createStackNavigator();
+const OrderStack = createStackNavigator();
+const VoucherStack = createStackNavigator();
 
 const HomeStackScreen = ({navigation}) => (
   <HomeStack.Navigator
@@ -101,6 +107,21 @@ const HomeStackScreen = ({navigation}) => (
     <HomeStack.Screen
       name="ProductListScreen"
       component={ProductListScreen}
+      options={{
+        title: 'Products',
+        headerLeft: props => (
+          <HeaderBackButton
+            {...props}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+        ),
+      }}
+    />
+    <HomeStack.Screen
+      name="ProductSubListScreen"
+      component={ProductSubListScreen}
       options={{
         title: 'Products',
         headerLeft: props => (
@@ -251,34 +272,6 @@ const WalletStackScreen = ({navigation}) => (
   </WalletStack.Navigator>
 );
 
-const ClubStackScreen = ({navigation}) => (
-  <ClubStack.Navigator
-    screenOptions={{
-      headerStyle: {
-        backgroundColor: Colors.primary,
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
-    }}>
-    <ClubStack.Screen
-      name="Club"
-      component={ClubScreen}
-      options={{
-        headerLeft: props => (
-          <HeaderBackButton
-            {...props}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        ),
-      }}
-    />
-  </ClubStack.Navigator>
-);
-
 const CheckoutStackScreen = ({navigation}) => (
   <CheckoutStack.Navigator
     screenOptions={{
@@ -317,6 +310,20 @@ const CheckoutStackScreen = ({navigation}) => (
           />
         ),
       }}
+    />
+    <CheckoutStack.Screen
+      name="Vouchers"
+      component={VoucherScreen}
+      // options={{
+      //   headerLeft: props => (
+      //     <HeaderBackButton
+      //       {...props}
+      //       onPress={() => {
+      //         navigation.goBack();
+      //       }}
+      //     />
+      //   ),
+      // }}
     />
   </CheckoutStack.Navigator>
 );
@@ -377,6 +384,76 @@ const PromotionStackScreen = ({navigation}) => (
   </PromotionStack.Navigator>
 );
 
+const OrderStackScreen = ({navigation}) => (
+  <OrderStack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: Colors.primary,
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}>
+    <OrderStack.Screen
+      name="Orders"
+      component={OrderScreen}
+      options={{
+        headerLeft: () => (
+          <Icon.Button
+            name="ios-menu"
+            size={25}
+            backgroundColor={Colors.primary}
+            onPress={() => navigation.openDrawer()}
+          />
+        ),
+      }}
+    />
+    <OrderStack.Screen
+      name="OrderDetails"
+      component={OrderDetailsScreen}
+      options={{
+        headerLeft: props => (
+          <HeaderBackButton
+            {...props}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+        ),
+      }}
+    />
+  </OrderStack.Navigator>
+);
+
+const VoucherStackScreen = ({navigation}) => (
+  <VoucherStack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: Colors.primary,
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}>
+    <VoucherStack.Screen
+      name="Vouchers"
+      component={VoucherScreen}
+      options={{
+        headerLeft: () => (
+          <Icon.Button
+            name="ios-menu"
+            size={25}
+            backgroundColor={Colors.primary}
+            onPress={() => navigation.openDrawer()}
+          />
+        ),
+      }}
+    />
+  </VoucherStack.Navigator>
+);
+
 const MainStack = () => {
   return (
     <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
@@ -387,10 +464,11 @@ const MainStack = () => {
       <Drawer.Screen name="WishList" component={WishlistStackScreen} />
       <Drawer.Screen name="Profile" component={ProfileStackScreen} />
       <Drawer.Screen name="Wallet" component={WalletStackScreen} />
-      <Drawer.Screen name="Club" component={ClubStackScreen} />
       <Drawer.Screen name="Checkout" component={CheckoutStackScreen} />
       <Drawer.Screen name="Chat" component={ChatStackScreen} />
       <Drawer.Screen name="Promotions" component={PromotionStackScreen} />
+      <Drawer.Screen name="Orders" component={OrderStackScreen} />
+      <Drawer.Screen name="Vouchers" component={VoucherStackScreen} />
     </Drawer.Navigator>
   );
 };

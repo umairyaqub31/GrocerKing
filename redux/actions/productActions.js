@@ -37,3 +37,9 @@ export const updateProducts = product => (dispatch, getState) => {
     payload: product,
   });
 };
+
+export const emptyProducts = product => (dispatch, getState) => {
+  dispatch({
+    type: 'EMPTY_PRODUCTS',
+  });
+};

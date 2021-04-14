@@ -6,7 +6,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {useSelector} from 'react-redux';
 const WalletScreen = () => {
+  const balance = useSelector(state => state.wallet.balance);
   return (
     <View style={styles.containe}>
       <Card containerStyle={styles.card1Container}>
@@ -14,9 +16,11 @@ const WalletScreen = () => {
           <Text style={{fontSize: hp('2.5%'), color: 'gray'}}>
             Available Balance
           </Text>
-          <Text style={{color: 'green', fontSize: hp('2%')}}>PKR 0</Text>
+          <Text style={{color: 'green', fontSize: hp('2%')}}>
+            PKR {balance}
+          </Text>
         </View>
-        <View style={styles.pBalanceView}>
+        {/* <View style={styles.pBalanceView}>
           <View style={styles.pBalanceSubView}>
             <Text style={{color: 'gray'}}>Personal Balance</Text>
             <Text style={{color: 'green', fontSize: hp('1.5%')}}>PKR 0</Text>
@@ -25,7 +29,7 @@ const WalletScreen = () => {
             <Text style={{color: 'gray'}}>Promotional Balance</Text>
             <Text style={{color: 'green', fontSize: hp('1.5%')}}>PKR 0</Text>
           </View>
-        </View>
+        </View> */}
       </Card>
 
       <Text style={styles.titleText}>Current Payment Method</Text>

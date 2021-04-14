@@ -1,5 +1,11 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,6 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import {useDispatch} from 'react-redux';
 import {updateQuantity, removeFromCart} from '../../redux/actions/cartActions';
+import {Image} from 'react-native-elements';
 const Item = props => {
   const {item} = props;
   const dispatch = useDispatch();
@@ -16,7 +23,11 @@ const Item = props => {
     if (quantity === 0) {
       dispatch(removeFromCart(item.product.id));
     } else {
-      dispatch(updateQuantity(quantity, item.product.id));
+      if (item.product.limit > quantity) {
+        dispatch(updateQuantity(quantity, item.product.id));
+      } else {
+        dispatch(updateQuantity(item.product.limit, item.product.id));
+      }
     }
   };
   return (
@@ -24,12 +35,21 @@ const Item = props => {
       <Image
         style={styles.image}
         source={{uri: item.product.images[0].image}}
+        PlaceholderContent={<ActivityIndicator />}
       />
-      <View style={{marginLeft: wp('5%')}}>
-        <Text style={styles.text}>{item.product.product_name}</Text>
-        <Text style={[styles.text, {fontSize: hp('1.7%')}]}>
-          {item.product.price}
+      <View style={{marginLeft: wp('5%'), marginRight: wp('50%')}}>
+        <Text ellipsizeMode="tail" numberOfLines={2} style={styles.text}>
+          {item.product.product_name}
         </Text>
+        {item.product.sale_price === null ? (
+          <Text style={[styles.text, {fontSize: hp('1.7%')}]}>
+            {item.product.price}
+          </Text>
+        ) : (
+          <Text style={[styles.text, {fontSize: hp('1.7%')}]}>
+            {item.product.sale_price}
+          </Text>
+        )}
       </View>
 
       <View style={styles.buttonView}>

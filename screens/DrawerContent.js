@@ -16,10 +16,11 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon1 from 'react-native-vector-icons/FontAwesome';
 
 import {AuthContext} from '../components/context';
 import auth from '@react-native-firebase/auth';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Colors} from '../styles';
 import {
   widthPercentageToDP as wp,
@@ -31,11 +32,15 @@ export function DrawerContent(props) {
   const {width} = Dimensions.get('window');
   const {signOut, toggleTheme} = React.useContext(AuthContext);
   const user = useSelector(state => state.user.user);
-
+  const dispatch = useDispatch();
   const handleSignOut = () => {
     auth()
       .signOut()
-      .then(() => console.log('User signed out!'));
+      .then(() => {
+        dispatch({type: 'RESET_CART'});
+        dispatch({type: 'EMPTY_WISHIST'});
+        dispatch({type: 'RESET_USER'});
+      });
   };
 
   return (
@@ -94,7 +99,7 @@ export function DrawerContent(props) {
             />
             <DrawerItem
               icon={({color, size}) => (
-                <Icon name="bookmark-outline" color={color} size={size} />
+                <Icon1 name="heart-o" color={color} size={size} />
               )}
               label="Wishlist"
               onPress={() => {
@@ -103,7 +108,7 @@ export function DrawerContent(props) {
             />
             <DrawerItem
               icon={({color, size}) => (
-                <Icon name="bookmark-outline" color={color} size={size} />
+                <Ionicons name="wallet-outline" color={color} size={size} />
               )}
               label="Wallet"
               onPress={() => {
@@ -117,6 +122,16 @@ export function DrawerContent(props) {
               label="Promotions"
               onPress={() => {
                 props.navigation.navigate('Promotions');
+              }}
+            />
+
+            <DrawerItem
+              icon={({color, size}) => (
+                <Ionicons name="clipboard-outline" color={color} size={size} />
+              )}
+              label="Orders"
+              onPress={() => {
+                props.navigation.navigate('Orders');
               }}
             />
             {/* <DrawerItem
@@ -147,7 +162,7 @@ export function DrawerContent(props) {
               }}
             />
           </Drawer.Section>
-          <Drawer.Section title="Preferences">
+          {/* <Drawer.Section title="Preferences">
             <TouchableRipple
               onPress={() => {
                 toggleTheme();
@@ -159,7 +174,7 @@ export function DrawerContent(props) {
                 </View>
               </View>
             </TouchableRipple>
-          </Drawer.Section>
+          </Drawer.Section> */}
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>

@@ -1,17 +1,43 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
+import FastImage from 'react-native-fast-image';
+// import {Image} from 'react-native-elements';
+import {Container, Header, Content, Thumbnail} from 'native-base';
 const SubCategoryItem = props => {
-  const {item, navigation} = props;
+  const {item, navigation, mainId} = props;
   return (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() =>
-        navigation.navigate('ProductListScreen', {
+        navigation.navigate('ProductSubListScreen', {
           id: item.category_id,
           name: item.category_name,
+          item: item,
         })
       }>
-      <Image style={styles.image} source={{uri: item.image.image}} />
+      {/* <Image
+        style={styles.image}
+        source={{uri: item.image.image}}
+        // PlaceholderContent={<ActivityIndicator />}
+      /> */}
+
+      <FastImage
+        style={styles.image}
+        source={{
+          uri: item.image.image,
+          priority: FastImage.priority.normal,
+        }}
+        // resizeMode={FastImage.resizeMode.contain}
+      />
+
+      {/* <Thumbnail square small source={{uri: item.image.image}} /> */}
       <Text style={styles.itemName}>{item.category_name}</Text>
     </TouchableOpacity>
   );
@@ -34,7 +60,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   image: {
-    width: '20%',
+    width: '40%',
     height: '50%',
   },
 });

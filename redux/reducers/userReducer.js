@@ -42,6 +42,13 @@ const userReducer = (state = initState, action) => {
         ...state,
         signedUp: true,
       };
+    case 'RESET_USER':
+      return {
+        ...state,
+        user: null,
+        address: null,
+        location: null,
+      };
     default:
       return state;
   }

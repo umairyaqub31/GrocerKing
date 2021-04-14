@@ -1,7 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {View, Text, Button, StyleSheet, Image} from 'react-native';
+import {View, Text, Button, StyleSheet, ActivityIndicator} from 'react-native';
 import {ExpandableListView} from 'react-native-expandable-listview';
+import {Image} from 'react-native-elements';
 
 const DetailsScreen = ({navigation}) => {
   const [listDataSource, setListDataSource] = useState([
@@ -21,6 +22,7 @@ const DetailsScreen = ({navigation}) => {
           <Image
             style={{width: '20%', height: '50%'}}
             source={require('../assets/product.jpeg')}
+            PlaceholderContent={<ActivityIndicator />}
           />
           <View>
             <Text style={{marginLeft: 15, fontSize: 20}}>
@@ -47,6 +49,7 @@ const DetailsScreen = ({navigation}) => {
               <Image
                 style={{width: '9%', height: '50%'}}
                 source={require('../assets/product.jpeg')}
+                PlaceholderContent={<ActivityIndicator />}
               />
               <View>
                 <Text style={{marginLeft: 15, fontSize: 20}}>Fruits</Text>
@@ -69,6 +72,7 @@ const DetailsScreen = ({navigation}) => {
               <Image
                 style={{width: '9%', height: '50%'}}
                 source={require('../assets/product.jpeg')}
+                PlaceholderContent={<ActivityIndicator />}
               />
               <View>
                 <Text style={{marginLeft: 15, fontSize: 20}}>Vegetables</Text>
@@ -96,6 +100,7 @@ const DetailsScreen = ({navigation}) => {
           <Image
             style={{width: '20%', height: '50%'}}
             source={require('../assets/product.jpeg')}
+            PlaceholderContent={<ActivityIndicator />}
           />
           <View>
             <Text style={{marginLeft: 15, fontSize: 20}}>
@@ -122,6 +127,7 @@ const DetailsScreen = ({navigation}) => {
               <Image
                 style={{width: '9%', height: '50%'}}
                 source={require('../assets/product.jpeg')}
+                PlaceholderContent={<ActivityIndicator />}
               />
               <View>
                 <Text style={{marginLeft: 15, fontSize: 20}}>Fruits</Text>
@@ -144,6 +150,7 @@ const DetailsScreen = ({navigation}) => {
               <Image
                 style={{width: '9%', height: '50%'}}
                 source={require('../assets/product.jpeg')}
+                PlaceholderContent={<ActivityIndicator />}
               />
               <View>
                 <Text style={{marginLeft: 15, fontSize: 20}}>Vegetables</Text>

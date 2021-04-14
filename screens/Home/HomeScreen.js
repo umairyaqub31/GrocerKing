@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   StatusBar,
   FlatList,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -24,6 +25,7 @@ import {
   getProducts,
   addProducts,
   updateProducts,
+  emptyProducts,
 } from '../../redux/actions/productActions';
 import {getWishlist} from '../../redux/actions/wishlistActions';
 import {useDispatch, useSelector} from 'react-redux';
@@ -43,6 +45,9 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 // import firestore from '@react-native-firebase/firestore';
 import {Colors} from '../../styles';
+import * as Animatable from 'react-native-animatable';
+import Splash from '../Splash';
+import {sortBy} from 'underscore';
 const HomeScreen = ({navigation}) => {
   const [Data, setData] = useState([1, 2, 3, 4, 5, 6, 7]);
 
@@ -60,6 +65,7 @@ const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
 
   const products = useSelector(state => state.product.products);
+  const featuredProducts = products.filter(p => p.isFeatured === true);
   const productsLoading = useSelector(state => state.product.productsLoading);
   const promotion = useSelector(state => state.promotion.promotion);
   const promotionLoading = useSelector(
@@ -71,8 +77,22 @@ const HomeScreen = ({navigation}) => {
   const address = useSelector(state => state.user.address);
   const location = useSelector(state => state.user.location);
 
+  const [topProducts, setTopProducts] = useState([]);
+
+  useEffect(() => {
+    const sortedProducts = sortBy(products, 'sold');
+    let temp = [];
+
+    if (productsLoading === false && products.length > 11) {
+      for (let i = 9; i >= 0; i--) {
+        temp.push(sortedProducts[i]);
+      }
+    }
+
+    setTopProducts(temp);
+  }, [products]);
+
   const _storeData = async (add, loc) => {
-    console.log('stored');
     try {
       await AsyncStorage.setItem('lat', loc.lat.toString());
       await AsyncStorage.setItem('lng', loc.lng.toString());
@@ -83,7 +103,6 @@ const HomeScreen = ({navigation}) => {
   };
 
   const _retrieveData = async () => {
-    console.log('hereRetrieve');
     try {
       const ad = await AsyncStorage.getItem('add');
       const lat = await AsyncStorage.getItem('lat');
@@ -131,17 +150,40 @@ const HomeScreen = ({navigation}) => {
           });
         }
       });
+
+    return () => {
+      observer();
+      dispatch(emptyPromotions());
+      dispatch(emptyProducts());
+    };
   }, [dispatch]);
 
   useEffect(() => {
     let chatObserver = null;
+    let walletObserver = null;
     if (user !== null) {
       chatObserver = firestore()
         .collection('rooms')
         .doc(user.uid)
         .onSnapshot(snap => {
           if (snap.exists) {
-            dispatch(addRoom(snap.data()));
+            let obj = {
+              roomName: snap.data().roomName,
+              lastMessage: snap.data().lastMessage,
+              messages: [],
+            };
+            snap.data().messages.map(message => {
+              let m = {
+                createdAt: new Date(message.createdAt.toDate()),
+                _id: message._id,
+                text: message.text,
+                user: message.user,
+              };
+
+              obj.messages.push(m);
+            });
+
+            dispatch(addRoom(obj));
           } else {
             firestore()
               .collection('rooms')
@@ -153,11 +195,34 @@ const HomeScreen = ({navigation}) => {
               });
           }
         });
+
+      walletObserver = firestore()
+        .collection('wallet')
+        .doc(user.uid)
+        .onSnapshot(snap => {
+          if (snap.exists) {
+            dispatch({
+              type: 'ADD_FUNDS',
+              payload: snap.data().balance,
+            });
+          } else {
+            firestore()
+              .collection('wallet')
+              .doc(user.uid)
+              .set({
+                balance: 0,
+              });
+          }
+        });
     }
 
     return () => {
       if (chatObserver !== null) {
         chatObserver();
+      }
+
+      if (walletObserver !== null) {
+        walletObserver();
       }
     };
   }, [dispatch, user]);
@@ -193,6 +258,34 @@ const HomeScreen = ({navigation}) => {
     }
   }, [user]);
 
+  const renderItem = useCallback(
+    ({item}) => (
+      <Item2
+        pric={item.price}
+        product_name={item.product_name}
+        inventory={item.inventory}
+        navigation={navigation}
+        images={item.images}
+        sale_price={item.sale_price}
+        isFeatured={item.isFeatured}
+        item={item}
+      />
+    ),
+    [],
+  );
+
+  const renderItem1 = useCallback(
+    ({item}) => <CategoryItem item={item} navigation={navigation} />,
+    [],
+  );
+
+  const keyExtractor = useCallback(item => item.id.toString(), []);
+  const keyExtractor1 = useCallback(item => item.category_id.toString(), []);
+
+  if (productsLoading) {
+    return <Splash />;
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={Colors.primary} barStyle="light-content" />
@@ -205,23 +298,17 @@ const HomeScreen = ({navigation}) => {
             </View>
           ) : (
             <View style={styles.productView}>
-              <Text style={styles.viewTitleText}>Featured Product</Text>
+              <Text style={styles.viewTitleText}>Featured Products</Text>
               <FlatList
-                data={products}
+                data={featuredProducts}
                 horizontal
-                renderItem={({item}) => (
-                  <Item2
-                    pric={item.price}
-                    product_name={item.product_name}
-                    inventory={item.inventory}
-                    navigation={navigation}
-                    images={item.images}
-                    sale_price={item.sale_price}
-                    isFeatured={item.isFeatured}
-                    item={item}
-                  />
-                )}
-                keyExtractor={(item, index) => index.toString()}
+                initialNumToRender={6}
+                maxToRenderPerBatch={6}
+                removeClippedSubviews={true}
+                windowSize={5}
+                updateCellsBatchingPeriod={100}
+                renderItem={renderItem}
+                keyExtractor={keyExtractor}
               />
             </View>
           )}
@@ -243,27 +330,22 @@ const HomeScreen = ({navigation}) => {
             <View style={styles.productView}>
               <Text style={styles.viewTitleText}>Top Sellers</Text>
               <FlatList
-                data={products}
+                data={topProducts}
                 horizontal
-                renderItem={({item}) => (
-                  <Item2
-                    pric={item.price}
-                    product_name={item.product_name}
-                    inventory={item.inventory}
-                    navigation={navigation}
-                    images={item.images}
-                    sale_price={item.sale_price}
-                    isFeatured={item.isFeatured}
-                    item={item}
-                  />
-                )}
-                keyExtractor={(item, index) => index.toString()}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                removeClippedSubviews={true}
+                windowSize={5}
+                updateCellsBatchingPeriod={100}
+                renderItem={renderItem}
+                keyExtractor={keyExtractor}
               />
             </View>
           )}
         </View>
 
         <View>
+          <Text style={styles.viewTitleText}> Categories </Text>
           {categoryLoading ? (
             <View>
               <ActivityIndicator size={'large'} />
@@ -271,21 +353,25 @@ const HomeScreen = ({navigation}) => {
           ) : (
             <FlatList
               data={category}
-              renderItem={({item}) => (
-                <CategoryItem item={item} navigation={navigation} />
-              )}
-              keyExtractor={(item, index) => index.toString()}
+              initialNumToRender={3}
+              maxToRenderPerBatch={3}
+              removeClippedSubviews={true}
+              windowSize={5}
+              updateCellsBatchingPeriod={100}
+              renderItem={renderItem1}
+              keyExtractor={keyExtractor1}
             />
           )}
         </View>
-
-        {/* <CategoryItem /> */}
       </ScrollView>
     </View>
   );
 };
 
 export default HomeScreen;
+
+const {height} = Dimensions.get('screen');
+const height_logo = height * 0.15;
 
 const styles = StyleSheet.create({
   container: {
@@ -301,5 +387,9 @@ const styles = StyleSheet.create({
   productView: {
     backgroundColor: '#F5F5F5',
     padding: 15,
+  },
+  logo: {
+    width: height_logo,
+    height: height_logo,
   },
 });

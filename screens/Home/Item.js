@@ -1,8 +1,9 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Image} from 'react-native-elements';
 
 const Item = props => {
   const {text, navigation} = props;
@@ -13,6 +14,7 @@ const Item = props => {
       <Image
         style={styles.image}
         source={require('../../assets/product.jpeg')}
+        PlaceholderContent={<ActivityIndicator />}
       />
       <View>
         <Text style={styles.text1}>Fruits & Vegitables</Text>
