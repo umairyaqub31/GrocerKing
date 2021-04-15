@@ -92,28 +92,11 @@ export const checkOutAction = (
 //   }
 // };
 
-export const verifyVoucher = (cart, code) => async (dispatch, getState) => {
-  const config = {
-    headers: {
-      'Content-type': 'Application/json',
-    },
-  };
-
-  const body = {
-    cart,
-    code,
-  };
-
-  try {
-    const res = await axios.post(
-      'https://us-central1-grocery-king-302815.cloudfunctions.net/api/vouchers/checkVoucher',
-      body,
-      config,
-    );
-    console.log('res', res);
-  } catch (err) {
-    console.log(err);
-  }
+export const setVoucher = (voucher) => async (dispatch, getState) => {
+  dispatch({
+    type: 'SET_VOUCHER',
+    payload: Voucher,
+  })
 };
 
 export const getOrders = (id, page) => async (dispatch, getState) => {

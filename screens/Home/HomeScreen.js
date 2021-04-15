@@ -235,7 +235,6 @@ const HomeScreen = ({navigation}) => {
         dispatch(setLocationAddress(address, location));
       } else {
         // dispatch(getLocationAddress(user.uid));
-        console.log('hereeeeeeeee');
         _retrieveData();
       }
     } else if (user !== null) {

@@ -4,9 +4,11 @@ import VoucherItem from './VoucherItem';
 import firestore from '@react-native-firebase/firestore';
 import {useDispatch, useSelector} from 'react-redux';
 
-const VoucherScreen = () => {
+const VoucherScreen = props => {
   const vouchers = useSelector(state => state.voucher.vouchers);
   const dispatch = useDispatch();
+  const {navigation} = props;
+  const {total} = props.route.params;
   useEffect(() => {
     dispatch({type: 'START_VOUCHER_LOADING'});
     firestore()
@@ -32,7 +34,9 @@ const VoucherScreen = () => {
       <Text>Vouchers</Text>
       <FlatList
         data={vouchers}
-        renderItem={({item, index}) => <VoucherItem item={item} />}
+        renderItem={({item, index}) => (
+          <VoucherItem item={item} navigation={navigation} total={total} />
+        )}
         keyExtractor={(item, index) => index.toString()}
       />
     </View>

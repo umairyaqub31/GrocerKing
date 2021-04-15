@@ -7,6 +7,7 @@ const initState = {
   orderSendLoading: false,
   orderSend: false,
   orderData: null,
+  voucher: null,
 };
 
 const cartReducer = (state = initState, action) => {
@@ -57,6 +58,10 @@ const cartReducer = (state = initState, action) => {
       return produce(state, draft => {
         draft.cart = [];
         draft.orders = [];
+      });
+    case 'SET_VOUCHER':
+      return produce(state, draft => {
+        draft.voucher = action.payload;
       });
     default:
       return state;

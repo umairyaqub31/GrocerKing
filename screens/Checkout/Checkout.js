@@ -87,6 +87,7 @@ const CheckoutScreen = ({navigation}) => {
   const orderSend = useSelector(state => state.cart.orderSend);
   const orderData = useSelector(state => state.cart.orderData);
   const balance = useSelector(state => state.wallet.balance);
+  const voucher = useSelector(state => state.cart.voucher);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -197,7 +198,7 @@ const CheckoutScreen = ({navigation}) => {
         lat: location.lat,
         lng: location.lng,
         address,
-        voucher: null,
+        voucher: voucher,
         total: grandTotal,
         scheduleType: selectedType,
       };
@@ -249,7 +250,7 @@ const CheckoutScreen = ({navigation}) => {
   };
 
   const handleVerifyVoucher = () => {
-    navigation.navigate('Vouchers');
+    navigation.navigate('Vouchers', {total: grandTotal});
   };
 
   return (

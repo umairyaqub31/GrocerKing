@@ -10,7 +10,7 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {View, ActivityIndicator, StyleSheet} from 'react-native';
+import {View, ActivityIndicator, StyleSheet, Alert} from 'react-native';
 import {
   NavigationContainer,
   DefaultTheme as NavigationDefaultTheme,
@@ -36,6 +36,7 @@ import {store, persistor} from './redux/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import MainStack from './screens/MainStack';
 import Auth from './screens/Auth/Auth';
+import messaging from '@react-native-firebase/messaging';
 
 const Drawer = createDrawerNavigator();
 
@@ -48,9 +49,13 @@ const App = () => {
   const state = store.getState();
   const [User, setUser] = useState(state.user.user);
 
-  // useEffect(() => {
-  //   store.dispatch({type: 'SET_USER', payload: setUser});
-  // }, []);
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
 
   // useEffect(() => {
   //   console.log('heere');
