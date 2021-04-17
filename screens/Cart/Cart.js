@@ -56,7 +56,7 @@ const CartScreen = ({navigation}) => {
         <TouchableOpacity
           style={[
             styles.button,
-            {paddingHorizontal: wp('17%'), backgroundColor: '#febd00'},
+            {paddingHorizontal: wp('17%'), backgroundColor: '#1A237E'},
           ]}
           onPress={handleCheckout}>
           <Text style={styles.btnText}>Go To Check Out</Text>

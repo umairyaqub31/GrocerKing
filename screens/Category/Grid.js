@@ -26,25 +26,10 @@ export default function Grid(props) {
       itemDimension={120}
       data={subcategories}
       style={styles.gridView}
-      // staticDimension={300}
-      // fixed
       spacing={10}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
     />
-
-    // <FlatList
-    //   data={subcategories}
-    //   // horizontal
-    //   initialNumToRender={6}
-    //   maxToRenderPerBatch={6}
-    //   removeClippedSubviews={true}
-    //   windowSize={5}
-    //   updateCellsBatchingPeriod={100}
-    //   renderItem={renderItem}
-    //   keyExtractor={keyExtractor}
-    //   numColumns={3}
-    // />
   );
 }
 

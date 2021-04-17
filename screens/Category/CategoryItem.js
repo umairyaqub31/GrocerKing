@@ -12,8 +12,7 @@ import {
 import Collapsible from 'react-native-collapsible';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import Grid from './Grid';
-// import {Image} from 'react-native-elements';
-// import storage from '@react-native-firebase/storage';
+import FastImage from 'react-native-fast-image';
 const CategoryItem = props => {
   const {item, navigation} = props;
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -31,10 +30,13 @@ const CategoryItem = props => {
   return (
     <View>
       <TouchableOpacity style={styles.container} onPress={control}>
-        <Image
-          style={{width: '22%', height: '50%'}}
-          source={{uri: item.image.image}}
-          // PlaceholderContent={<ActivityIndicator />}
+        <FastImage
+          style={styles.image}
+          source={{
+            uri: item.image.image,
+            priority: FastImage.priority.high,
+          }}
+          resizeMode={FastImage.resizeMode.contain}
         />
         <View>
           <Text style={styles.text}>{item.category_name}</Text>
@@ -87,5 +89,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 12,
     color: '#fff',
+  },
+  image: {
+    width: '22%',
+    height: '50%',
   },
 });

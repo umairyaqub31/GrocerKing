@@ -17,14 +17,14 @@ import {Image} from 'react-native-elements';
 const Item = props => {
   const {item} = props;
   const dispatch = useDispatch();
-  console.log('iteemememem', item);
   const update_quantity = quantity => {
-    console.log('quantity', quantity);
     if (quantity === 0) {
       dispatch(removeFromCart(item.product.id));
     } else {
       if (item.product.limit > quantity) {
         dispatch(updateQuantity(quantity, item.product.id));
+      } else if (item.product.inventory > quantity) {
+        dispatch(updateQuantity(item.product.inventory, item.product.id));
       } else {
         dispatch(updateQuantity(item.product.limit, item.product.id));
       }
@@ -41,13 +41,27 @@ const Item = props => {
         <Text ellipsizeMode="tail" numberOfLines={2} style={styles.text}>
           {item.product.product_name}
         </Text>
-        {item.product.sale_price === null ? (
-          <Text style={[styles.text, {fontSize: hp('1.7%')}]}>
-            {item.product.price}
-          </Text>
+        {item.product.sale_price !== null && item.product.sale_price !== '' ? (
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <Text
+              style={{
+                color: '#1A237E',
+                fontSize: 18,
+                fontWeight: 'bold',
+              }}>
+              RS {item.product.sale_price}
+            </Text>
+          </View>
         ) : (
-          <Text style={[styles.text, {fontSize: hp('1.7%')}]}>
-            {item.product.sale_price}
+          <Text
+            style={[
+              styles.text,
+              {color: '#1A237E', fontWeight: 'bold', fontSize: 18},
+            ]}>
+            RS {item.product.price}
           </Text>
         )}
       </View>
@@ -56,13 +70,13 @@ const Item = props => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => update_quantity(item.quantity - 1)}>
-          <Icon name="minus" size={30} color="#fff" />
+          <Icon name="minus" size={30} color="#1A237E" />
         </TouchableOpacity>
         <Text style={styles.text}>{item.quantity}</Text>
         <TouchableOpacity
           style={styles.button}
           onPress={() => update_quantity(item.quantity + 1)}>
-          <Icon name="plus" size={30} color="#fff" />
+          <Icon name="plus" size={30} color="#1A237E" />
         </TouchableOpacity>
       </View>
     </View>
@@ -103,7 +117,7 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
     borderRadius: 17.5,
-    backgroundColor: '#939ba4',
+    backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -24,6 +24,31 @@ const OrderDetailsScreen = props => {
   }, [data.slot]);
   return (
     <ScrollView style={styles.container}>
+      <View>
+        <View style={styles.subView}>
+          <Text style={styles.titleText}>Order Date:</Text>
+          <Text>{moment(data.date).format('MMMM Do YYYY')}</Text>
+        </View>
+        <View style={styles.subView}>
+          <Text style={styles.titleText}>Order Delivery Day:</Text>
+
+          <Text>
+            On {data.day} at {timeSlot}
+          </Text>
+        </View>
+        <View style={styles.subView}>
+          <Text style={styles.titleText}>Schedule Type:</Text>
+          <Text>{data.scheduleType}</Text>
+        </View>
+        <View style={styles.subView}>
+          <Text style={styles.titleText}>Address:</Text>
+          <Text>{data.address}</Text>
+        </View>
+        <View style={styles.subView}>
+          <Text style={styles.titleText}>Total:</Text>
+          <Text>{data.total}</Text>
+        </View>
+      </View>
       <Text
         style={{fontWeight: 'bold', marginVertical: hp('2%'), fontSize: 15}}>
         Products
@@ -34,25 +59,6 @@ const OrderDetailsScreen = props => {
           renderItem={({item, index}) => <OrderProductItem item={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
-      </View>
-      <View>
-        <View style={styles.subView}>
-          <Text style={styles.titleText}>Order Date:</Text>
-          <Text>{moment(data.date).format('MMMM Do YYYY')}</Text>
-        </View>
-        <View style={styles.subView}>
-          <Text style={styles.titleText}>Order Delivery Day:</Text>
-          <Text>{data.day}</Text>
-          <Text style={{marginLeft: wp('1%')}}>{timeSlot}</Text>
-        </View>
-        <View style={styles.subView}>
-          <Text style={styles.titleText}>Schedule Type:</Text>
-          <Text>{data.scheduleType}</Text>
-        </View>
-        <View style={styles.subView}>
-          <Text style={styles.titleText}>Address:</Text>
-          <Text>{data.address}</Text>
-        </View>
       </View>
     </ScrollView>
   );
@@ -66,10 +72,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   productView: {
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
   },
   subView: {
     flexDirection: 'row',
+    alignContent: 'flex-start',
+    justifyContent: 'space-between',
     marginVertical: hp('2%'),
   },
   titleText: {

@@ -26,7 +26,7 @@ import Icon3 from 'react-native-vector-icons/Feather';
 import RadioButtonRN from 'radio-buttons-react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import {checkOutAction, verifyVoucher} from '../../redux/actions/cartActions';
+import {clearVoucher} from '../../redux/actions/cartActions';
 import {ScrollView} from 'react-native';
 import {Colors} from '../../styles';
 import ToggleSwitch from 'toggle-switch-react-native';
@@ -69,7 +69,6 @@ const CheckoutScreen = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState(
     user.phoneNumber !== null ? user.phoneNumber : null,
   );
-  const [vCode, setVCode] = useState(null);
   const [total, setTotal] = useState(null);
   const [grandTotal, setGrandTotal] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(null);
@@ -84,7 +83,6 @@ const CheckoutScreen = ({navigation}) => {
 
   const location = useSelector(state => state.user.location);
   const orderSendLoading = useSelector(state => state.cart.orderSendLoading);
-  const orderSend = useSelector(state => state.cart.orderSend);
   const orderData = useSelector(state => state.cart.orderData);
   const balance = useSelector(state => state.wallet.balance);
   const voucher = useSelector(state => state.cart.voucher);
@@ -105,11 +103,6 @@ const CheckoutScreen = ({navigation}) => {
       setCashBack(0);
     }
   };
-  // useEffect(() => {
-  //   if (orderSend === true) {
-  //     showAlert();
-  //   }
-  // }, [orderSend]);
 
   useEffect(() => {
     if (orderData !== null) {
@@ -163,20 +156,16 @@ const CheckoutScreen = ({navigation}) => {
     showMode('date');
   };
 
-  // const showTimepicker = () => {
-  //   showMode('time');
-  // };
   const onChangePhoneNumber = num => {
     setPhoneNumber(num);
   };
 
   useEffect(() => {
+    dispatch(clearVoucher());
     caculateTotalPrice();
   }, [cart]);
 
   const handleCheckOut = async () => {
-    console.log('checkOut Pressed');
-    // console.log(cart, user, location, address, selectedType);
     if (phoneNumber === null) {
       Alert.alert('Phone Number Required!', 'Enter your valid phone number.', [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
@@ -303,6 +292,8 @@ const CheckoutScreen = ({navigation}) => {
         </Card>
 
         <RadioButtonRN
+          activeColor={Colors.primary}
+          animationTypes={['shake']}
           data={data}
           selectedBtn={e => setSelectedType(e.label)}
         />
@@ -314,7 +305,6 @@ const CheckoutScreen = ({navigation}) => {
                 marginTop: hp('2%'),
                 marginBottom: hp('3%'),
                 flexDirection: 'row',
-                // backgroundColor: 'red',
               }}>
               <Icon name="calendar" style={{marginTop: hp('1%')}} />
               <Text style={{marginLeft: wp('2%'), marginTop: hp('1%')}}>
@@ -325,16 +315,10 @@ const CheckoutScreen = ({navigation}) => {
                   flexDirection: 'row',
                   position: 'absolute',
                   right: wp('5%'),
-                  // backgroundColor:'red',
                   borderWidth: 1,
                   paddingHorizontal: 5,
                   alignItems: 'center',
                 }}>
-                {/* <TextInput
-                style={styles.input}
-                // onChangeText={onChangeText}
-                value={'24/3/2021'}
-              /> */}
                 <Text style={{marginRight: wp('15%')}}>
                   {moment(date).format('MMM Do YY')}
                 </Text>
@@ -441,9 +425,27 @@ const CheckoutScreen = ({navigation}) => {
             <Text>{cashBack}</Text>
           </View>
           <View style={styles.totalSubView}>
-            <Text>Discount Type</Text>
-            <Text>Sub Total</Text>
+            {voucher !== null && (
+              <>
+                <Text>Discount Type</Text>
+                <Text>{voucher.discount_type}</Text>
+              </>
+            )}
           </View>
+
+          {voucher !== null && voucher.discount_type === 'flat_rate' && (
+            <View style={styles.totalSubView}>
+              <Text>{voucher.discount_type}</Text>
+              <Text>{voucher.discount_flat}</Text>
+            </View>
+          )}
+          {voucher !== null && voucher.discount_type === 'percentage' && (
+            <View style={styles.totalSubView}>
+              <Text>{voucher.discount_type}</Text>
+              <Text>{voucher.discount_percent}</Text>
+            </View>
+          )}
+
           <View
             style={[
               styles.totalSubView,

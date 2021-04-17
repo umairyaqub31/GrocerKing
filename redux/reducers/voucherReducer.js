@@ -18,7 +18,7 @@ const VoucherReducer = (state = initState, action) => {
       return produce(state, draft => {
         draft.voucherLoading = false;
       });
-    case 'CLEAR_VOUCHER':
+    case 'CLEAR_VOUCHERS':
       return produce(state, draft => {
         draft.vouchers = [];
       });

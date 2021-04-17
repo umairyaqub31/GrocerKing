@@ -17,10 +17,14 @@ import {
 } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Feather';
 import {Image} from 'react-native-elements';
+import FastImage from 'react-native-fast-image';
+import {Badge} from 'native-base';
+
 const Item = props => {
   const {navigation, item} = props;
   let image = item.images[0].image;
   const [Index, setIndex] = useState(-1);
+  const [off, setOff] = useState(0);
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart.cart);
   const addItem = () => {
@@ -32,6 +36,14 @@ const Item = props => {
     setIndex(index);
   }, [cart]);
 
+  useEffect(() => {
+    if (item.sale_price !== null && item.sale_price !== '') {
+      const per = item.price - item.sale_price;
+      const perOff = (per / item.price) * 100;
+      setOff(perOff.toFixed(0));
+    }
+  });
+
   const update_quantity = quantity => {
     console.log('quantity', quantity);
     if (quantity === 0) {
@@ -40,6 +52,8 @@ const Item = props => {
     } else {
       if (item.limit < quantity) {
         dispatch(updateQuantity(item.limit, item.id));
+      } else if (item.inventory < quantity) {
+        dispatch(updateQuantity(item.inventory, item.id));
       } else {
         dispatch(updateQuantity(quantity, item.id));
       }
@@ -50,20 +64,25 @@ const Item = props => {
       <>
         {item.inventory > 0 ? null : (
           <View style={[styles.overlay, {height: hp('50%')}]}>
-            <Image
+            <FastImage
               style={[styles.image, {height: hp('10%')}]}
               source={require('../../assets/images/soldOut.png')}
+              resizeMode={FastImage.resizeMode.contain}
             />
+            <Image />
           </View>
         )}
       </>
       <TouchableOpacity
         onPress={() => navigation.navigate('ProductScreen', {item: item})}>
         <View style={styles.imageView}>
-          <Image
+          <FastImage
             style={styles.image}
-            source={{uri: image}}
-            PlaceholderContent={<ActivityIndicator />}
+            source={{
+              uri: image,
+              priority: FastImage.priority.high,
+            }}
+            resizeMode={FastImage.resizeMode.contain}
           />
         </View>
         <View style={{paddingVertical: hp('1%'), paddingHorizontal: wp('2%')}}>
@@ -74,44 +93,58 @@ const Item = props => {
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              paddingHorizontal: wp('2%'),
             }}>
-            <Text
-              style={[
-                styles.text,
-                {
-                  color: 'red',
-                  fontWeight: 'bold',
-                },
-              ]}>
-              RS
-            </Text>
-            {item.sale_price !== null ? (
-              <View>
-                <View
+            {item.sale_price !== null && item.sale_price !== '' ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <Text
                   style={{
-                    flexDirection: 'row',
-                    marginLeft: wp('2%'),
+                    textDecorationLine: 'line-through',
+                    color: '#cccccc',
+                    fontSize: 19,
                   }}>
-                  <Text style={{textDecorationLine: 'line-through'}}>
-                    {item.price}
-                  </Text>
-                  <Text
-                    style={{
-                      marginLeft: wp('2%'),
-                      color: 'red',
-                      fontSize: 19,
-                    }}>
-                    {item.sale_price}
-                  </Text>
-                </View>
+                  RS {item.price}
+                </Text>
+                <Text
+                  style={{
+                    marginLeft: wp('2%'),
+                    color: '#1A237E',
+                    fontSize: 19,
+                    fontWeight: 'bold',
+                  }}>
+                  RS {item.sale_price}
+                </Text>
               </View>
             ) : (
-              <Text style={{marginLeft: wp('2%'), color: 'red', fontSize: 19}}>
-                {item.price}
+              <Text
+                style={{
+                  color: '#1A237E',
+                  fontSize: 19,
+                  fontWeight: 'bold',
+                }}>
+                RS {item.price}
               </Text>
             )}
           </View>
+
+          {off !== 0 && (
+            <Badge style={{backgroundColor: '#1A237E', marginTop: 5}}>
+              <Text
+                style={{
+                  padding: 2,
+                  color: '#fff',
+                  fontSize: 19,
+                  fontWeight: 'bold',
+                }}>
+                {off} % Off!
+              </Text>
+            </Badge>
+          )}
         </View>
       </TouchableOpacity>
 
@@ -139,19 +172,23 @@ const Item = props => {
                 bottom: 7,
                 alignSelf: 'center',
                 width: wp('35%'),
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                paddingVertical: 3,
+                borderColor: '#1A237E',
               }}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => update_quantity(cart[Index].quantity - 1)}>
-                <Icon name="minus" size={30} color="#fff" />
+                <Icon name="minus" size={30} color="#1A237E" />
               </TouchableOpacity>
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              <Text style={{fontSize: 30, color: '#1A237E'}}>
                 {cart[Index] !== undefined ? <>{cart[Index].quantity}</> : null}
               </Text>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => update_quantity(cart[Index].quantity + 1)}>
-                <Icon name="plus" size={30} color="#fff" />
+                <Icon name="plus" size={30} color="#1A237E" />
               </TouchableOpacity>
             </View>
           ) : null}
@@ -194,7 +231,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   btn: {
-    backgroundColor: '#388E3C',
+    backgroundColor: '#1A237E',
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -202,7 +239,7 @@ const styles = StyleSheet.create({
   btnText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 19,
   },
   buttonView: {
     flexDirection: 'row',
@@ -215,7 +252,7 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
     borderRadius: 17.5,
-    backgroundColor: '#939ba4',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -13,14 +13,6 @@ import {emptyWishist} from '../../redux/actions/wishlistActions';
 import firestore from '@react-native-firebase/firestore';
 
 const WishListScreen = () => {
-  const [Data, setData] = useState([
-    {name: 'Potato1', price: '50', id: 1},
-    {name: 'Potato2', price: '70', id: 2},
-    {name: 'Potato3', price: '100', id: 3},
-    {name: 'Potato4', price: '50', id: 1},
-    {name: 'Potato5', price: '70', id: 2},
-    {name: 'Potato6', price: '100', id: 3},
-  ]);
   const dispatch = useDispatch();
   const wishlist = useSelector(state => state.wishlist.wishlist);
   const user = useSelector(state => state.user.user);
@@ -53,10 +45,10 @@ const WishListScreen = () => {
         <TouchableOpacity
           style={[
             styles.button,
-            {paddingHorizontal: wp('17%'), backgroundColor: '#febd00'},
+            {paddingHorizontal: wp('17%'), backgroundColor: '#1A237E'},
           ]}
           onPress={addAllToCart}>
-          <Text style={styles.btnText}>Add to Cart</Text>
+          <Text style={styles.btnText}>Add All to Cart</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{marginLeft: wp('3%')}} onPress={emptyCart}>
           <Icon name="delete" size={30} color="#939ba4" />

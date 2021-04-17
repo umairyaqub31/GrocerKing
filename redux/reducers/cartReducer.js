@@ -63,6 +63,10 @@ const cartReducer = (state = initState, action) => {
       return produce(state, draft => {
         draft.voucher = action.payload;
       });
+    case 'CLEAR_VOUCHER':
+      return produce(state, draft => {
+        draft.voucher = null;
+      });
     default:
       return state;
   }

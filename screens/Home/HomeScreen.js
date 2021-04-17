@@ -45,32 +45,19 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 // import firestore from '@react-native-firebase/firestore';
 import {Colors} from '../../styles';
-import * as Animatable from 'react-native-animatable';
 import Splash from '../Splash';
 import {sortBy} from 'underscore';
-const HomeScreen = ({navigation}) => {
-  const [Data, setData] = useState([1, 2, 3, 4, 5, 6, 7]);
 
+const HomeScreen = ({navigation}) => {
   const {colors} = useTheme();
 
   const theme = useTheme();
-
-  const [position, setPosition] = useState(1);
-  const [interval, setInterval] = useState(null);
-  const [dataSource, setDataSource] = useState([
-    {url: 'http://placeimg.com/640/480/any'},
-    {url: 'http://placeimg.com/640/480/any'},
-  ]);
-
   const dispatch = useDispatch();
 
   const products = useSelector(state => state.product.products);
   const featuredProducts = products.filter(p => p.isFeatured === true);
   const productsLoading = useSelector(state => state.product.productsLoading);
   const promotion = useSelector(state => state.promotion.promotion);
-  const promotionLoading = useSelector(
-    state => state.promotion.promotionLoading,
-  );
   const category = useSelector(state => state.category.category);
   const categoryLoading = useSelector(state => state.category.categoryLoading);
   const user = useSelector(state => state.user.user);
@@ -313,12 +300,10 @@ const HomeScreen = ({navigation}) => {
           )}
         </View>
 
-        {/* <>
-          {promotionLoading ? (
-            <View>
-              <ActivityIndicator size={'large'} />
-            </View>
-          ) : ( */}
+        <View>
+          <Text style={styles.viewTitleText}>Promotions</Text>
+        </View>
+
         {promotion.length > 0 ? <SliderView promotion={promotion} /> : null}
         <View style={{borderRadius: 5}}>
           {productsLoading ? (
@@ -327,7 +312,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           ) : (
             <View style={styles.productView}>
-              <Text style={styles.viewTitleText}>Top Sellers</Text>
+              <Text style={styles.viewTitleText}>Best Sellers</Text>
               <FlatList
                 data={topProducts}
                 horizontal

@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-import {Container, Header, Content, Tab, Tabs} from 'native-base';
+import React from 'react';
+import {Container, Tab, Tabs} from 'native-base';
 import ProductListScreen2 from './ProductsList2';
 const TabScreen = props => {
   const {subcategories} = props;

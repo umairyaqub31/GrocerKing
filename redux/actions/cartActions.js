@@ -92,11 +92,21 @@ export const checkOutAction = (
 //   }
 // };
 
-export const setVoucher = (voucher) => async (dispatch, getState) => {
+export const setVoucher = voucher => async (dispatch, getState) => {
+  console.log(voucher);
+
   dispatch({
     type: 'SET_VOUCHER',
-    payload: Voucher,
-  })
+    payload: voucher,
+  });
+};
+
+export const clearVoucher = voucher => async (dispatch, getState) => {
+  console.log(voucher);
+
+  dispatch({
+    type: 'CLEAR_VOUCHER',
+  });
 };
 
 export const getOrders = (id, page) => async (dispatch, getState) => {

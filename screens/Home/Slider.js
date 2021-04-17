@@ -13,12 +13,6 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 const SliderView = props => {
-  const [images, setImages] = useState([
-    'https://placeimg.com/640/640/nature',
-    'https://placeimg.com/640/640/people',
-    'https://placeimg.com/640/640/animals',
-    'https://placeimg.com/640/640/beer',
-  ]);
   const {promotion} = props;
   return (
     <SafeAreaView style={styles.container}>

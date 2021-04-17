@@ -23,9 +23,11 @@ import ProductSubListScreen from './Product/ProductSubList';
 import {DrawerContent} from './DrawerContent';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
+import {Label, Text} from 'native-base';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../styles';
+import {useSelector} from 'react-redux';
 
 const Drawer = createDrawerNavigator();
 const CartStack = createStackNavigator();
@@ -40,102 +42,111 @@ const PromotionStack = createStackNavigator();
 const OrderStack = createStackNavigator();
 const VoucherStack = createStackNavigator();
 
-const HomeStackScreen = ({navigation}) => (
-  <HomeStack.Navigator
-    screenOptions={{
-      headerStyle: {
-        backgroundColor: Colors.primary,
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
-    }}>
-    <HomeStack.Screen
-      name="Home"
-      component={HomeScreen}
-      options={{
-        title: 'Overview',
-        headerLeft: () => (
-          <Icon.Button
-            name="ios-menu"
-            size={25}
-            backgroundColor={Colors.primary}
-            onPress={() => navigation.openDrawer()}
-          />
-        ),
-        headerRight: () => (
-          <Icon.Button
-            name="ios-cart-outline"
-            size={25}
-            backgroundColor={Colors.primary}
-            onPress={() => navigation.navigate('Cart')}
-          />
-        ),
-      }}
-    />
-    <HomeStack.Screen
-      name="ProductScreen"
-      component={ProductScreen}
-      options={{
-        title: 'Product',
-        headerLeft: props => (
-          <HeaderBackButton
-            {...props}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        ),
-      }}
-    />
-    <HomeStack.Screen
-      name="CategoryScreen"
-      component={CategoryScreen}
-      options={{
-        title: 'Category',
-        headerLeft: () => (
-          <Icon.Button
-            name="ios-menu"
-            size={25}
-            backgroundColor={Colors.primary}
-            onPress={() => navigation.openDrawer()}
-          />
-        ),
-      }}
-    />
-    <HomeStack.Screen
-      name="ProductListScreen"
-      component={ProductListScreen}
-      options={{
-        title: 'Products',
-        headerLeft: props => (
-          <HeaderBackButton
-            {...props}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        ),
-      }}
-    />
-    <HomeStack.Screen
-      name="ProductSubListScreen"
-      component={ProductSubListScreen}
-      options={{
-        title: 'Products',
-        headerLeft: props => (
-          <HeaderBackButton
-            {...props}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        ),
-      }}
-    />
-  </HomeStack.Navigator>
-);
+const HomeStackScreen = ({navigation}) => {
+  const cart = useSelector(state => state.cart.cart);
+
+  return (
+    <HomeStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: Colors.primary,
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <HomeStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: 'Overview',
+          headerLeft: () => (
+            <Icon.Button
+              name="ios-menu"
+              size={25}
+              backgroundColor={Colors.primary}
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+          headerRight: () => (
+            <>
+              <Icon.Button
+                name="ios-cart-outline"
+                size={25}
+                backgroundColor={Colors.primary}
+                onPress={() => navigation.navigate('Cart')}
+              />
+              <Label style={{backgroundColor: 'black'}}>
+                <Text style={{color: '#fff'}}>{cart.length}</Text>
+              </Label>
+            </>
+          ),
+        }}
+      />
+      <HomeStack.Screen
+        name="ProductScreen"
+        component={ProductScreen}
+        options={{
+          title: 'Product',
+          headerLeft: props => (
+            <HeaderBackButton
+              {...props}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ),
+        }}
+      />
+      <HomeStack.Screen
+        name="CategoryScreen"
+        component={CategoryScreen}
+        options={{
+          title: 'Category',
+          headerLeft: () => (
+            <Icon.Button
+              name="ios-menu"
+              size={25}
+              backgroundColor={Colors.primary}
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+        }}
+      />
+      <HomeStack.Screen
+        name="ProductListScreen"
+        component={ProductListScreen}
+        options={{
+          title: 'Products',
+          headerLeft: props => (
+            <HeaderBackButton
+              {...props}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ),
+        }}
+      />
+      <HomeStack.Screen
+        name="ProductSubListScreen"
+        component={ProductSubListScreen}
+        options={{
+          title: 'Products',
+          headerLeft: props => (
+            <HeaderBackButton
+              {...props}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ),
+        }}
+      />
+    </HomeStack.Navigator>
+  );
+};
 
 const CartStackScreen = ({navigation}) => (
   <CartStack.Navigator

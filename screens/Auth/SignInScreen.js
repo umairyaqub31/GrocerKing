@@ -39,9 +39,11 @@ const SignInScreen = ({navigation}) => {
   const [showMessage, setShowMessage] = useState(false);
   const [confirm, setConfirm] = useState(null);
   const phoneInput = useRef(null);
+  const codeInput = useRef(null);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [timer, setTimer] = useState(false);
+  const [c, setCode] = useState('');
   // Handle user state changes
   const background = require('../../assets/images/signInBackground.jpg');
   const {colors} = useTheme();
@@ -50,10 +52,18 @@ const SignInScreen = ({navigation}) => {
     setTimer(false);
     if (phoneNumber !== null && phoneNumber !== '') {
       setLoading(true);
-      const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+      try {
+        const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+        setConfirm(confirmation);
+        setLoading(false);
+      } catch (err) {
+        Alert.alert(
+          'Invalid Phone Number!',
+          'Please Enter a valid Phone Number.',
+          [{text: 'OK', onPress: () => setLoading(false)}],
+        );
+      }
       // navigation.navigate('ConfirmCodeScreen', {confirmation});
-      setConfirm(confirmation);
-      setLoading(false);
     } else {
       Alert.alert(
         'Invalid Phone Number!',
@@ -159,17 +169,22 @@ const SignInScreen = ({navigation}) => {
           animation="fadeInUpBig">
           <SafeAreaView style={styles.wrapper}>
             <OTPInputView
+              ref={codeInput}
               style={{
                 width: wp('80%'),
                 height: hp('10%'),
                 alignSelf: 'center',
               }}
               pinCount={6}
-              // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-              // onCodeChanged = {code => { this.setState({code})}}
-              autoFocusOnLoad
-              codeInputFieldStyle={styles.underlineStyleBase}
-              codeInputHighlightStyle={styles.underlineStyleHighLighted}
+              code={c}
+              editable
+              codeInputFieldStyle={{color: '#000', fontSize: 19}}
+              keyboardAppearance={'default'}
+              keyboardType={'number-pad'} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+              onCodeChanged={code => {
+                setCode(code);
+              }}
+              autoFocusOnLoad={false}
               onCodeFilled={code => {
                 confirmCode(code);
               }}
@@ -264,5 +279,8 @@ const styles = StyleSheet.create({
   },
   underlineStyleBase: {
     backgroundColor: Colors.primary,
+  },
+  underlineStyleHighLighted: {
+    borderColor: '#03DAC6',
   },
 });

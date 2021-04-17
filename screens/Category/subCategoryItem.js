@@ -1,15 +1,10 @@
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
+import React from 'react';
+import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {createImageProgress} from 'react-native-image-progress';
 import FastImage from 'react-native-fast-image';
-// import {Image} from 'react-native-elements';
-import {Container, Header, Content, Thumbnail} from 'native-base';
+import * as Progress from 'react-native-progress';
+const Image = createImageProgress(FastImage);
+
 const SubCategoryItem = props => {
   const {item, navigation, mainId} = props;
   return (
@@ -22,22 +17,15 @@ const SubCategoryItem = props => {
           item: item,
         })
       }>
-      {/* <Image
-        style={styles.image}
-        source={{uri: item.image.image}}
-        // PlaceholderContent={<ActivityIndicator />}
-      /> */}
-
       <FastImage
         style={styles.image}
         source={{
           uri: item.image.image,
-          priority: FastImage.priority.normal,
+          priority: FastImage.priority.high,
         }}
-        // resizeMode={FastImage.resizeMode.contain}
+        resizeMode={FastImage.resizeMode.contain}
       />
 
-      {/* <Thumbnail square small source={{uri: item.image.image}} /> */}
       <Text style={styles.itemName}>{item.category_name}</Text>
     </TouchableOpacity>
   );
@@ -50,7 +38,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    // padding: 10,
     height: 100,
     backgroundColor: '#fff',
   },

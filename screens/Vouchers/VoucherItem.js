@@ -18,7 +18,6 @@ const VoucherItem = props => {
   const user = useSelector(state => state.user.user);
   const [applicable, setAppicable] = useState(true);
   const [dbVoucher, setDBVoucher] = useState({});
-  const [usage, setUsage] = useState(0);
 
   useEffect(() => {
     if (item.expiry) {
@@ -51,7 +50,7 @@ const VoucherItem = props => {
 
     setDBVoucher(voucherUses);
     if (voucherUses.exists === false) {
-      const snapshot = await firestore()
+      await firestore()
         .collection('users')
         .doc(user.uid)
         .collection('vouchers')
@@ -64,34 +63,20 @@ const VoucherItem = props => {
     if (voucherUses.exists && voucherUses.data().usage > item.usage) {
       setAppicable(false);
     }
-
-    if (voucherUses.exists && voucherUses.data().usage < item.usage) {
-      setUsage(voucherUses.data().usage);
-    }
   };
 
   const handleVoucherPress = async () => {
-    if (item.limit) {
-      await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('vouchers')
-        .doc(item.id)
-        .update({
-          usage: usage + 1,
-        });
-    }
-
     dispatch(setVoucher(item));
     navigation.navigate('Checkout');
   };
 
   return (
-    <View>
-      <Text>{item.voucher_name}</Text>
-      <Text>{item.description}</Text>
-      {/* <Text>{discount_flat}</Text> */}
-      {applicable && (
+    <View style={styles.container}>
+      <View style={{width: '60%'}}>
+        <Text style={{fontSize: 25}}>{item.voucher_name}</Text>
+        <Text style={{}}>{item.description}</Text>
+      </View>
+      {applicable ? (
         <TouchableOpacity
           onPress={handleVoucherPress}
           style={{justifyContent: 'center'}}>
@@ -101,6 +86,8 @@ const VoucherItem = props => {
             <Text style={styles.btnText}>Use Voucher</Text>
           </LinearGradient>
         </TouchableOpacity>
+      ) : (
+        <Text>Not Applicable</Text>
       )}
     </View>
   );
@@ -109,6 +96,16 @@ const VoucherItem = props => {
 export default VoucherItem;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    // backgroundColor: '#f2f2f2',
+    padding: wp('2%'),
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#f2f2f2',
+    paddingVertical: hp('2%'),
+    alignItems: 'center',
+  },
   orderBtn: {
     width: wp('90%'),
     height: hp('5.5%'),

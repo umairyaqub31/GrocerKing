@@ -25,13 +25,12 @@ const VoucherScreen = props => {
         dispatch({type: 'STOP_VOUCHER_LOADING'});
       });
     return () => {
-      dispatch({type: 'CLEAR_VOUCHER'});
+      dispatch({type: 'CLEAR_VOUCHERS'});
     };
   }, [dispatch]);
 
   return (
     <View>
-      <Text>Vouchers</Text>
       <FlatList
         data={vouchers}
         renderItem={({item, index}) => (

@@ -39,11 +39,11 @@ const Item = props => {
           {item.product.product_name}
         </Text>
         {item.product.sale_price === null ? (
-          <Text style={[styles.text, {fontSize: hp('1.7%')}]}>
+          <Text style={[styles.text, {fontSize: 18, color: '#1A237E'}]}>
             {item.product.price}
           </Text>
         ) : (
-          <Text style={[styles.text, {fontSize: hp('1.7%')}]}>
+          <Text style={[styles.text, {fontSize: 18, color: '#1A237E'}]}>
             {item.product.sale_price}
           </Text>
         )}
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     height: hp('4%'),
     width: wp('20%'),
     borderRadius: 5,
-    backgroundColor: '#febd00',
+    backgroundColor: '#1A237E',
     justifyContent: 'center',
     alignItems: 'center',
   },
