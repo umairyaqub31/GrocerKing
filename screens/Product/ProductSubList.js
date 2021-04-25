@@ -17,6 +17,7 @@ import {
 } from 'react-native-responsive-screen';
 import TabScreen from './TabScreen';
 import ProductListScreen from './ProductsList';
+import {sortBy} from 'underscore';
 
 const ProductSubListScreen = props => {
   const {id, name, item} = props.route.params;
@@ -33,8 +34,9 @@ const ProductSubListScreen = props => {
 
   useEffect(() => {
     const filteredProducts = products.filter(p => p.category_id === id);
+    const sortedProducts = sortBy(filteredProducts, 'product_name');
     // console.log(filteredProducts);
-    setData(filteredProducts);
+    setData(sortedProducts);
   }, [products, id]);
 
   //   useEffect(() => {
@@ -63,7 +65,9 @@ const ProductSubListScreen = props => {
       <Text style={styles.heading}>{name}</Text>
       <FlatList
         data={Data}
-        renderItem={({item}) => <ProductItem item={item} />}
+        renderItem={({item}) => (
+          <ProductItem item={item} navigation={navigation} />
+        )}
         keyExtractor={(item, index) => index.toString()}
       />
     </View>

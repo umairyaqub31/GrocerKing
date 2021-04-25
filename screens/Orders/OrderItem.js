@@ -65,29 +65,22 @@ const OrderItem = props => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('OrderDetails', {data: item})}>
-        <View>
-          <View style={styles.subView}>
-            <Text style={styles.titleText}>Order Date:</Text>
-            <Text>{moment(item.date).format('MMMM Do YYYY')}</Text>
-          </View>
-          <View style={styles.subView}>
-            <Text style={styles.titleText}>Order Delivery Day:</Text>
-            <Text>{item.day}</Text>
-            <Text style={{marginLeft: wp('1%')}}>{timeSlot}</Text>
-          </View>
-          <View style={styles.subView}>
-            <Text style={styles.titleText}>Schedule Type:</Text>
-            <Text>{item.scheduleType}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('OrderDetails', {data: item})}
+      style={styles.container}>
+      <Text style={[styles.titleText, {marginTop: 0}]}>Order Date:</Text>
+      <Text>{moment(item.date).format('MMMM Do YYYY')}</Text>
+      <Text style={styles.titleText}>Order Delivery Day:</Text>
+      <Text numberOfLines={3} ellipsizeMode="tail" style={{width: 200}}>
+        On {item.day} in between {timeSlot}
+      </Text>
+      <Text style={styles.titleText}>Status:</Text>
+      <Text>{item.status}</Text>
+
       <View style={{position: 'absolute', right: 30}}>
         {difference > 5 ? null : (
           <TouchableOpacity
-            style={styles.button}
+            style={[styles.button, {marginTop: 15}]}
             disabled={deleted}
             onPress={handleCancel}>
             {deleted ? (
@@ -98,7 +91,7 @@ const OrderItem = props => {
           </TouchableOpacity>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -107,15 +100,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginVertical: hp('1.5%'),
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    elevation: 5,
+    borderRadius: 10,
+    shadowRadius: 10,
+    shadowOpacity: 0.5,
+    shadowColor: '#000',
   },
   subView: {
     flexDirection: 'row',
+    marginRight: wp('50%'),
   },
   titleText: {
+    marginTop: 10,
     marginRight: wp('2%'),
     fontWeight: 'bold',
   },

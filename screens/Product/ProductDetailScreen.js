@@ -32,18 +32,26 @@ const ProductScreen = props => {
   const {navigation, route} = props;
   const [Index, setIndex] = useState(-1);
   const [Index1, setIndex1] = useState(-1);
+  const [categoryProducts, setCategoryProducts] = useState([]);
 
   const {colors} = useTheme();
   const product = route.params;
 
   const products = useSelector(state => state.product.products);
-  const productsLoading = useSelector(state => state.product.productsLoading);
   const wishlist = useSelector(state => state.wishlist.wishlist);
   const cart = useSelector(state => state.cart.cart);
   const user = useSelector(state => state.user.user);
   const dispatch = useDispatch();
 
   const theme = useTheme();
+
+  useEffect(() => {
+    const filteredProducts = products.filter(
+      p =>
+        p.category_id === product.item.category_id && p.id !== product.item.id,
+    );
+    setCategoryProducts(filteredProducts);
+  }, [products]);
 
   useEffect(() => {
     console.log('wishlist', wishlist);
@@ -67,7 +75,6 @@ const ProductScreen = props => {
   };
   const update_quantity = quantity => {
     if (quantity === 0) {
-      setIndex(-1);
       dispatch(removeFromCart(product.item.id));
     } else {
       if (product.item.limit < quantity) {
@@ -139,9 +146,6 @@ const ProductScreen = props => {
           )}
         </View>
         <View>
-          <Text style={[styles.text, {fontSize: 18, color: 'gray'}]}>
-            {product.item.inventory} in Stock
-          </Text>
           {Index === -1 ? (
             <TouchableOpacity onPress={add_to_wishlist}>
               <Icon name="heart-o" size={hp('4%')} />
@@ -154,23 +158,17 @@ const ProductScreen = props => {
         </View>
       </View>
       <View style={{flex: 1, borderRadius: 5}}>
-        <Text style={styles.heading}>More Items</Text>
-        {productsLoading ? (
-          <View>
-            <ActivityIndicator size={'large'} />
-          </View>
-        ) : (
-          <View>
-            <FlatList
-              data={products}
-              horizontal
-              renderItem={({item}) => (
-                <Item2 item={item} navigation={navigation} />
-              )}
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </View>
-        )}
+        <View>
+          <Text style={styles.heading}>More Items</Text>
+          <FlatList
+            data={categoryProducts}
+            horizontal
+            renderItem={({item}) => (
+              <Item2 item={item} navigation={navigation} />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
         {product.item.inventory > 0 ? (
           <>
             {Index1 === -1 ? (
@@ -224,7 +222,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: hp('10%'),
+    marginTop: hp('5%'),
   },
   btnText: {
     color: '#fff',
@@ -237,7 +235,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: wp('90%'),
     alignSelf: 'center',
-    marginTop: hp('10%'),
+    marginTop: hp('5%'),
     paddingHorizontal: 20,
     paddingVertical: 5,
     borderWidth: 1,

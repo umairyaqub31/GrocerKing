@@ -87,7 +87,7 @@ const VoucherItem = props => {
           </LinearGradient>
         </TouchableOpacity>
       ) : (
-        <Text>Not Applicable</Text>
+        <Text style={{fontSize: 19}}>Not Applicable</Text>
       )}
     </View>
   );
@@ -100,11 +100,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     // backgroundColor: '#f2f2f2',
-    padding: wp('2%'),
+    padding: wp('3%'),
     borderBottomWidth: 1.5,
     borderBottomColor: '#f2f2f2',
-    paddingVertical: hp('2%'),
+    marginVertical: hp('2%'),
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    elevation: 1,
   },
   orderBtn: {
     width: wp('90%'),

@@ -1,17 +1,19 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {StyleSheet, View, Text, FlatList} from 'react-native';
 import {FlatGrid} from 'react-native-super-grid';
 import SubCategoryItem from '../Category/subCategoryItem';
+import {sortBy} from 'underscore';
+
 export default function Grid(props) {
   const {subcategories, navigation, mainId} = props;
-  const [items, setItems] = React.useState([
-    {name: 'TURQUOISE', code: '#1abc9c'},
-    {name: 'EMERALD', code: '#2ecc71'},
-    {name: 'PETER RIVER', code: '#3498db'},
-    {name: 'PETER RIVER', code: '#3498db'},
-  ]);
+  const [sorted, setSorted] = useState([]);
   // console.log('Subbbb', subcategories);
+
+  useEffect(() => {
+    const sortedCategories = sortBy(subcategories, 'category_name');
+    setSorted(sortedCategories);
+  }, []);
 
   const renderItem = useCallback(
     ({item}) => (
@@ -24,7 +26,7 @@ export default function Grid(props) {
   return (
     <FlatGrid
       itemDimension={120}
-      data={subcategories}
+      data={sorted}
       style={styles.gridView}
       spacing={10}
       renderItem={renderItem}

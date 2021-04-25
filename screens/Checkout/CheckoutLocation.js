@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {SignUp} from '../../redux/actions/authActions';
 const marker = require('../../assets/icons8-marker.png');
 import {Image} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const CheckoutLocationScreen = props => {
   const [location, setLocation] = useState(null);
@@ -28,11 +29,36 @@ const CheckoutLocationScreen = props => {
   const dispatch = useDispatch();
   const signedUp = useSelector(state => state.user.signedUp);
 
+  const mapRef = useRef();
+
   const onRegionChange = region => {
     setLatlng({
       lat: region.latitude,
       lng: region.longitude,
     });
+  };
+
+  const gotToMyLocation = () => {
+    console.log(mapRef);
+    Geolocation.getCurrentPosition(
+      ({coords}) => {
+        console.log('curent location: ', coords);
+        if (mapRef) {
+          console.log('curent location: ', coords);
+          mapRef.current.animateToRegion(
+            {
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              latitudeDelta: 0.009,
+              longitudeDelta: 0.009,
+            },
+            2000,
+          );
+        }
+      },
+      // error => alert('Error: Are location services on?'),
+      // {enableHighAccuracy: true},
+    );
   };
 
   useEffect(() => {}, []);
@@ -47,6 +73,7 @@ const CheckoutLocationScreen = props => {
     return (
       <View style={styles.container}>
         <MapView
+          ref={mapRef}
           initialRegion={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -76,6 +103,22 @@ const CheckoutLocationScreen = props => {
           // onChangeText={onChangeText}
           placeholder={'Address'}
         />
+
+        <TouchableOpacity
+          onPress={gotToMyLocation}
+          style={{
+            width: 60,
+            height: 60,
+            position: 'absolute',
+            top: 100,
+            right: 20,
+            borderRadius: 30,
+            backgroundColor: '#d2d2d2',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Icon name="location-arrow" size={30} />
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={() => console.log('Pressed')}>
           <LinearGradient

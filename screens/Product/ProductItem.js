@@ -21,11 +21,12 @@ import Icon from 'react-native-vector-icons/Feather';
 import {Image} from 'react-native-elements';
 
 const ProductItem = props => {
-  const {item} = props;
+  const {item, navigation} = props;
   const dispatch = useDispatch();
   const [Index, setIndex] = useState(-1);
   const cart = useSelector(state => state.cart.cart);
   useEffect(() => {
+    console.log(item);
     const index = cart.findIndex(p => p.product.id === item.id);
     setIndex(index);
   }, [cart, item.id]);
@@ -35,7 +36,6 @@ const ProductItem = props => {
   };
 
   const update_quantity = quantity => {
-    console.log('quantity', quantity);
     if (quantity === 0) {
       setIndex(-1);
       dispatch(removeFromCart(item.id));
@@ -51,7 +51,9 @@ const ProductItem = props => {
   };
 
   return (
-    <View style={styles.container} onPress={() => console.log('Pressed')}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigation.navigate('ProductScreen', {item: item})}>
       <Image
         style={styles.image}
         source={{uri: item.images[0].image}}
@@ -61,7 +63,7 @@ const ProductItem = props => {
         <Text
           ellipsizeMode="tail"
           numberOfLines={2}
-          style={[styles.text, {marginRight: wp('50%')}]}>
+          style={[styles.text, {marginRight: wp('55%')}]}>
           {item.product_name}
         </Text>
         {item.sale_price !== null && item.sale_price !== '' ? (
@@ -91,7 +93,7 @@ const ProductItem = props => {
           <Text
             style={[
               styles.text,
-              {color: 'red', fontWeight: 'bold', fontSize: 18},
+              {color: '#1A237E', fontWeight: 'bold', fontSize: 18},
             ]}>
             RS {item.price}
           </Text>
@@ -113,7 +115,11 @@ const ProductItem = props => {
                 onPress={() => update_quantity(cart[Index].quantity - 1)}>
                 <Icon name="minus" size={30} color="#1A237E" />
               </TouchableOpacity>
-              <Text style={styles.text}>{cart[Index].quantity}</Text>
+              <>
+                {cart[Index] !== undefined && (
+                  <Text style={styles.text}>{cart[Index].quantity}</Text>
+                )}
+              </>
               <TouchableOpacity
                 style={styles.button1}
                 onPress={() => update_quantity(cart[Index].quantity + 1)}>
@@ -123,9 +129,11 @@ const ProductItem = props => {
           )}
         </>
       ) : (
-        <Text style={{fontSize: 20, color: 'red'}}> Sold Out! </Text>
+        <View style={{right: wp('10%')}}>
+          <Text style={{fontSize: 14, color: 'red'}}>Sold Out!</Text>
+        </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -135,22 +143,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
+    alignSelf: 'center',
     // backgroundColor: '#f2f2f2',
-    padding: wp('2%'),
+    padding: wp('0%'),
     borderBottomWidth: 1.5,
     borderBottomColor: '#f2f2f2',
-    paddingVertical: hp('2%'),
+    marginVertical: hp('0.5%'),
+    maxWidth: wp('98%'),
     alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    elevation: 1,
   },
   text: {fontSize: hp('2.5%'), color: '#212121'},
   image: {
-    width: wp('15%'),
-    height: hp('5%'),
-    marginLeft: wp('1%'),
+    width: wp('25%'),
+    height: hp('15%'),
+    marginLeft: wp('2%'),
+    resizeMode: 'contain',
   },
   buttonView: {
     position: 'absolute',
-    right: wp('7%'),
+    right: wp('2.5%'),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -168,7 +182,7 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
     borderRadius: 17.5,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -84,7 +84,9 @@ const SignInScreen = ({navigation}) => {
       setLoading(false);
       // navigation.navigate('SignUpScreen');
     } catch (error) {
-      console.log('Invalid code.');
+      Alert.alert('Invalid Code', 'Please enter a valid code number', [
+        {text: 'OK', onPress: () => setLoading(false)},
+      ]);
     }
   }
   if (!confirm) {

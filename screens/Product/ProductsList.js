@@ -18,6 +18,7 @@ import {
 
 const ProductListScreen = props => {
   const {id, name} = props.route.params;
+  const {navigation} = props;
   const [Data, setData] = useState([]);
   const products = useSelector(state => state.product.products);
   const productsLoading = useSelector(state => state.product.productsLoading);
@@ -33,7 +34,9 @@ const ProductListScreen = props => {
       <Text style={styles.heading}>{name}</Text>
       <FlatList
         data={Data}
-        renderItem={({item}) => <ProductItem item={item} />}
+        renderItem={({item}) => (
+          <ProductItem item={item} navigation={navigation} />
+        )}
         keyExtractor={(item, index) => index.toString()}
       />
     </View>

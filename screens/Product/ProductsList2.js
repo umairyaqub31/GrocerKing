@@ -17,7 +17,7 @@ import {
 } from 'react-native-responsive-screen';
 
 const ProductListScreen2 = props => {
-  const {id, name} = props;
+  const {id, name, navigation} = props;
   const [Data, setData] = useState([]);
   const products = useSelector(state => state.product.products);
   const productsLoading = useSelector(state => state.product.productsLoading);
@@ -32,7 +32,9 @@ const ProductListScreen2 = props => {
     <View style={styles.container}>
       <FlatList
         data={Data}
-        renderItem={({item}) => <ProductItem item={item} />}
+        renderItem={({item}) => (
+          <ProductItem item={item} navigation={navigation} />
+        )}
         keyExtractor={(item, index) => index.toString()}
       />
     </View>
@@ -44,6 +46,7 @@ export default ProductListScreen2;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
     // alignItems: 'center',
     // justifyContent: 'center'
   },

@@ -291,77 +291,81 @@ const HomeScreen = ({navigation}) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <>
-        {productsLoading ? (
-          <View>
-            <ActivityIndicator size={'large'} />
-          </View>
-        ) : (
-          <View style={styles.productView}>
-            <Text style={styles.viewTitleText}>Featured Products</Text>
+    <View style={styles.container}>
+      <StatusBar backgroundColor={Colors.primary} barStyle="light-content" />
+      {/* <StatusBar backgroundColor={Colors.primary}barStyle={theme.dark ? 'light-content' : 'dark-content'} /> */}
+
+      <ScrollView style={{paddingHorizontal: 15, paddingVertical: 15}}>
+        <View style={{borderRadius: 5}}>
+          {productsLoading ? (
+            <View>
+              <ActivityIndicator size={'large'} />
+            </View>
+          ) : (
+            <View style={styles.productView}>
+              <Text style={styles.viewTitleText}>Featured Products</Text>
+              <FlatList
+                data={featuredProducts}
+                horizontal
+                initialNumToRender={6}
+                maxToRenderPerBatch={6}
+                removeClippedSubviews={true}
+                windowSize={5}
+                updateCellsBatchingPeriod={100}
+                renderItem={renderItem}
+                keyExtractor={keyExtractor}
+              />
+            </View>
+          )}
+        </View>
+
+        <View>
+          <Text style={styles.viewTitleText}>Promotions</Text>
+        </View>
+
+        {promotion.length > 0 ? <SliderView promotion={promotion} /> : null}
+        <View style={{borderRadius: 5}}>
+          {productsLoading ? (
+            <View>
+              <ActivityIndicator size={'large'} />
+            </View>
+          ) : (
+            <View style={styles.productView}>
+              <Text style={styles.viewTitleText}>Best Sellers</Text>
+              <FlatList
+                data={topProducts}
+                horizontal
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                removeClippedSubviews={true}
+                windowSize={5}
+                updateCellsBatchingPeriod={100}
+                renderItem={renderItem}
+                keyExtractor={keyExtractor}
+              />
+            </View>
+          )}
+        </View>
+
+        <View>
+          <Text style={styles.viewTitleText}> Categories </Text>
+          {categoryLoading ? (
+            <View>
+              <ActivityIndicator size={'large'} />
+            </View>
+          ) : (
             <FlatList
-              data={featuredProducts}
-              horizontal
-              initialNumToRender={6}
-              maxToRenderPerBatch={6}
+              data={sortedCategories}
               removeClippedSubviews={true}
               windowSize={5}
               updateCellsBatchingPeriod={100}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
+              renderItem={renderItem1}
+              keyExtractor={keyExtractor1}
             />
-          </View>
-        )}
-      </>
-
-      <View>
-        <Text style={[styles.viewTitleText, {marginLeft: 16}]}>Promotions</Text>
-      </View>
-
-      <>{promotion.length > 0 ? <SliderView promotion={promotion} /> : null}</>
-
-      <>
-        {productsLoading ? (
-          <View>
-            <ActivityIndicator size={'large'} />
-          </View>
-        ) : (
-          <View style={styles.productView}>
-            <Text style={styles.viewTitleText}>Best Sellers</Text>
-            <FlatList
-              data={topProducts}
-              horizontal
-              initialNumToRender={10}
-              maxToRenderPerBatch={10}
-              removeClippedSubviews={true}
-              windowSize={5}
-              updateCellsBatchingPeriod={100}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-            />
-          </View>
-        )}
-      </>
-
-      <View>
-        <Text style={styles.viewTitleText}> Categories </Text>
-        {categoryLoading ? (
-          <View>
-            <ActivityIndicator size={'large'} />
-          </View>
-        ) : (
-          <FlatList
-            data={sortedCategories}
-            removeClippedSubviews={true}
-            windowSize={5}
-            updateCellsBatchingPeriod={100}
-            renderItem={renderItem1}
-            keyExtractor={keyExtractor1}
-          />
-        )}
-      </View>
-    </ScrollView>
+          )}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 

@@ -8,6 +8,7 @@ import {
   Image,
   TouchableHighlight,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -24,7 +25,7 @@ const SliderView = props => {
           // It's important to put style here because it's got offset inside
           <View key={index} style={styles.customSlide}>
             {item.image === undefined ? null : (
-              <Image
+              <FastImage
                 source={{uri: item.image.image}}
                 style={styles.customImage}
               />

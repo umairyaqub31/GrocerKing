@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     position: 'absolute',
-    right: wp('7%'),
+    right: wp('9%'),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   button: {
     height: hp('4%'),
-    width: wp('20%'),
+    width: wp('23%'),
     borderRadius: 5,
     backgroundColor: '#1A237E',
     justifyContent: 'center',
@@ -104,5 +104,6 @@ const styles = StyleSheet.create({
   btnText: {
     fontWeight: 'bold',
     color: '#fff',
+    fontSize: 12,
   },
 });

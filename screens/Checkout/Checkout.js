@@ -74,7 +74,9 @@ const CheckoutScreen = ({navigation}) => {
   const [deliveryFee, setDeliveryFee] = useState(null);
   const [toggleState, setToggleState] = useState(false);
   const [timeSlot, setTimeSlot] = useState(null);
-  const [cashBack, setCashBack] = useState(0);
+  const [funds, setFunds] = useState(0);
+  const [cashback, setcashback] = useState(0);
+  const [discount, setDiscount] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -96,11 +98,11 @@ const CheckoutScreen = ({navigation}) => {
     console.log(isOn);
     setToggleState(isOn);
     if (isOn === true) {
-      setCashBack(balance);
+      setFunds(balance);
       setGrandTotal(grandTotal - balance);
     } else {
       setGrandTotal(grandTotal + balance);
-      setCashBack(0);
+      setFunds(0);
     }
   };
 
@@ -131,7 +133,7 @@ const CheckoutScreen = ({navigation}) => {
 
   const closeAlert = async () => {
     dispatch({type: 'ORDER_SEND_RESET'});
-    if (cashBack > 0) {
+    if (funds > 0) {
       await firestore()
         .collection('wallet')
         .doc(user.uid)
@@ -144,7 +146,9 @@ const CheckoutScreen = ({navigation}) => {
         payload: 0,
       });
 
-      setCashBack(0);
+      setFunds(0);
+      console.log('Close');
+      navigation.navigate('Home');
     }
   };
   const showMode = currentMode => {
@@ -168,7 +172,7 @@ const CheckoutScreen = ({navigation}) => {
   const handleCheckOut = async () => {
     if (phoneNumber === null) {
       Alert.alert('Phone Number Required!', 'Enter your valid phone number.', [
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
+        {text: 'OK', onPress: () => {}},
       ]);
     } else {
       dispatch({
@@ -214,27 +218,46 @@ const CheckoutScreen = ({navigation}) => {
         sl = '06:00 - 09:00 PM';
       }
       showAlert(res.data.day, sl);
+      dispatch({
+        type: 'RESET_CART',
+      });
+      navigation.navigate('Home');
     }
   };
 
   const caculateTotalPrice = () => {
     let tot = 0;
+    let dis = 0;
     cart.map(item => {
       if (item.product.sale_price !== null && item.product.sale_price !== '') {
         tot = tot + item.product.sale_price * item.quantity;
+        dis =
+          dis +
+          (item.product.price * item.quantity -
+            item.product.sale_price * item.quantity);
       } else {
         tot = tot + item.product.price * item.quantity;
       }
     });
 
     setTotal(tot);
+    setDiscount(dis);
+
+    let cb = 0;
+    cb = (tot - funds) * 0.1;
+
+    if (cb > 1000) {
+      setcashback(1000);
+    } else {
+      setcashback(cb);
+    }
 
     if (tot >= 2000) {
       setDeliveryFee(0);
-      setGrandTotal(tot - cashBack);
+      setGrandTotal(tot - funds);
     } else {
       setDeliveryFee(100);
-      setGrandTotal(tot + 100 - cashBack);
+      setGrandTotal(tot + 100 - funds);
     }
   };
 
@@ -422,8 +445,19 @@ const CheckoutScreen = ({navigation}) => {
           </View>
           <View style={styles.totalSubView}>
             <Text>Wallet Funds</Text>
-            <Text>{cashBack}</Text>
+            <Text>{funds}</Text>
           </View>
+
+          <View style={styles.totalSubView}>
+            <Text>CashBack</Text>
+            <Text>{cashback}</Text>
+          </View>
+
+          <View style={styles.totalSubView}>
+            <Text>Total Discount</Text>
+            <Text>{discount}</Text>
+          </View>
+
           <View style={styles.totalSubView}>
             {voucher !== null && (
               <>
@@ -449,7 +483,7 @@ const CheckoutScreen = ({navigation}) => {
           <View
             style={[
               styles.totalSubView,
-              {marginTop: hp('3%'), borderTopWidth: 1},
+              {marginTop: hp('1%'), borderTopWidth: 1},
             ]}>
             <Text>Grand Total</Text>
             <Text>{grandTotal}</Text>

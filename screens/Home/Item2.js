@@ -86,7 +86,10 @@ const Item = props => {
           />
         </View>
         <View style={{paddingVertical: hp('1%'), paddingHorizontal: wp('2%')}}>
-          <Text ellipsizeMode="tail" numberOfLines={1} style={styles.text}>
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            style={[styles.text, {width: 150}]}>
             {item.product_name}
           </Text>
 
@@ -106,7 +109,7 @@ const Item = props => {
                   style={{
                     textDecorationLine: 'line-through',
                     color: '#cccccc',
-                    fontSize: 19,
+                    fontSize: 12,
                   }}>
                   RS {item.price}
                 </Text>
@@ -114,7 +117,7 @@ const Item = props => {
                   style={{
                     marginLeft: wp('2%'),
                     color: '#1A237E',
-                    fontSize: 19,
+                    fontSize: 12,
                     fontWeight: 'bold',
                   }}>
                   RS {item.sale_price}
@@ -124,7 +127,7 @@ const Item = props => {
               <Text
                 style={{
                   color: '#1A237E',
-                  fontSize: 19,
+                  fontSize: 12,
                   fontWeight: 'bold',
                 }}>
                 RS {item.price}
@@ -132,18 +135,26 @@ const Item = props => {
             )}
           </View>
 
-          {off !== 0 && (
-            <Badge style={{backgroundColor: '#1A237E', marginTop: 5}}>
+          {off !== 0 ? (
+            <Badge
+              style={{
+                backgroundColor: '#1A237E',
+                marginTop: 5,
+              }}>
               <Text
                 style={{
-                  padding: 2,
                   color: '#fff',
-                  fontSize: 19,
+                  fontSize: 10,
                   fontWeight: 'bold',
                 }}>
                 {off} % Off!
               </Text>
             </Badge>
+          ) : (
+            <View
+              style={{
+                marginTop: 31,
+              }}></View>
           )}
         </View>
       </TouchableOpacity>
@@ -152,10 +163,11 @@ const Item = props => {
         <View
           style={{
             // backgroundColor: 'red',
-            position: 'absolute',
-            bottom: 7,
+            // position: 'absolute',
+            // bottom: 7,
             alignSelf: 'center',
             width: wp('35%'),
+            paddingBottom: 20,
           }}>
           <TouchableOpacity style={styles.btn} onPress={addItem}>
             <Text style={styles.btnText}>Add to Cart</Text>
@@ -168,21 +180,22 @@ const Item = props => {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                position: 'absolute',
-                bottom: 7,
+                // position: 'absolute',
+                // bottom: 7,
                 alignSelf: 'center',
                 width: wp('35%'),
                 borderWidth: 1,
                 paddingHorizontal: 10,
-                paddingVertical: 3,
+                paddingVertical: 0,
                 borderColor: '#1A237E',
+                marginBottom: 18,
               }}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => update_quantity(cart[Index].quantity - 1)}>
                 <Icon name="minus" size={30} color="#1A237E" />
               </TouchableOpacity>
-              <Text style={{fontSize: 30, color: '#1A237E'}}>
+              <Text style={{fontSize: 26, color: '#1A237E'}}>
                 {cart[Index] !== undefined ? <>{cart[Index].quantity}</> : null}
               </Text>
               <TouchableOpacity
@@ -202,11 +215,15 @@ export default Item;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#ffffff',
-    height: hp('30%'),
-    width: wp('40%'),
+    // height: hp('30%'),
+    // width: wp('40%'),
     marginHorizontal: wp('1%'),
-    paddingVertical: hp('1%'),
+    elevation: 5,
+    shadowOpacity: 0.5,
+    marginBottom: 2,
+    // paddingVertical: hp('1%'),
   },
   imageView: {
     height: wp('26%'),
@@ -232,14 +249,14 @@ const styles = StyleSheet.create({
   },
   btn: {
     backgroundColor: '#1A237E',
-    height: 40,
+    height: 35,
     alignItems: 'center',
     justifyContent: 'center',
   },
   btnText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 19,
+    fontSize: 15,
   },
   buttonView: {
     flexDirection: 'row',
@@ -263,7 +280,7 @@ const styles = StyleSheet.create({
     top: 0,
     opacity: 0.5,
     backgroundColor: 'black',
-    width: wp('40%'),
+    // width: wp('40%'),
     zIndex: 10,
   },
 });

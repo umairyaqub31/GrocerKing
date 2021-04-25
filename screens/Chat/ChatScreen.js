@@ -6,23 +6,34 @@ import firestore from '@react-native-firebase/firestore';
 const ChatScreen = () => {
   const room = useSelector(state => state.chat.room);
   const user = useSelector(state => state.user.user);
-  const [messages, setMessages] = useState(room.messages);
+  const [messages, setMessages] = useState([]);
+  const [fromMe, setFromMe] = useState(false);
 
   const onSend = useCallback((messages = []) => {
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     );
+
+    setFromMe(true);
   }, []);
 
   useEffect(() => {
-    firestore()
-      .collection('rooms')
-      .doc(user.uid)
-      .update({
-        messages: messages,
-      });
+    setMessages(room.messages);
+    setFromMe(false);
+  }, [room.messages]);
+
+  useEffect(() => {
+    if (fromMe === true) {
+      firestore()
+        .collection('rooms')
+        .doc(user.uid)
+        .update({
+          lastMessage: new Date(),
+          messages: messages,
+        });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
+  }, [fromMe]);
 
   return (
     <GiftedChat

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -20,8 +20,8 @@ import firestore from '@react-native-firebase/firestore';
 import {useDispatch, useSelector} from 'react-redux';
 import {SignUp} from '../../redux/actions/authActions';
 import {Colors} from '../../styles';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 const marker = require('../../assets/icons8-marker.png');
-
 const PickLocationScreen = props => {
   const [location, setLocation] = useState(null);
   const [latlng, setLatlng] = useState(null);
@@ -30,6 +30,7 @@ const PickLocationScreen = props => {
   const user = useSelector(state => state.user.user);
   const dispatch = useDispatch();
   const signedUp = useSelector(state => state.user.signedUp);
+  const mapRef = useRef();
 
   useEffect(() => {
     if (signedUp) {
@@ -62,6 +63,29 @@ const PickLocationScreen = props => {
     });
   };
 
+  const gotToMyLocation = () => {
+    console.log(mapRef);
+    Geolocation.getCurrentPosition(
+      ({coords}) => {
+        console.log('curent location: ', coords);
+        if (mapRef) {
+          console.log('curent location: ', coords);
+          mapRef.current.animateToRegion(
+            {
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              latitudeDelta: 0.009,
+              longitudeDelta: 0.009,
+            },
+            2000,
+          );
+        }
+      },
+      // error => alert('Error: Are location services on?'),
+      // {enableHighAccuracy: true},
+    );
+  };
+
   useEffect(() => {
     Geolocation.getCurrentPosition(
       position => {
@@ -87,6 +111,7 @@ const PickLocationScreen = props => {
     return (
       <View style={styles.container}>
         <MapView
+          ref={mapRef}
           initialRegion={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -109,6 +134,21 @@ const PickLocationScreen = props => {
             style={styles.location}>
             <Text style={styles.textSign}>Sign Up</Text>
           </LinearGradient>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={gotToMyLocation}
+          style={{
+            width: 60,
+            height: 60,
+            position: 'absolute',
+            top: 100,
+            right: 20,
+            borderRadius: 30,
+            backgroundColor: '#d2d2d2',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Icon name="location-arrow" size={30} />
         </TouchableOpacity>
       </View>
     );

@@ -129,7 +129,7 @@ export function DrawerContent(props) {
               icon={({color, size}) => (
                 <Ionicons name="clipboard-outline" color={color} size={size} />
               )}
-              label="Orders"
+              label="Orders History"
               onPress={() => {
                 props.navigation.navigate('Orders');
               }}
@@ -143,15 +143,6 @@ export function DrawerContent(props) {
                 props.navigation.navigate('Club');
               }}
             /> */}
-            <DrawerItem
-              icon={({color, size}) => (
-                <Ionicons name="settings-outline" color={color} size={size} />
-              )}
-              label="Settings"
-              onPress={() => {
-                props.navigation.navigate('SettingsScreen');
-              }}
-            />
             <DrawerItem
               icon={({color, size}) => (
                 <Icon name="account-check-outline" color={color} size={size} />

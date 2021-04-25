@@ -29,13 +29,15 @@ const OrderDetailsScreen = props => {
           <Text style={styles.titleText}>Order Date:</Text>
           <Text>{moment(data.date).format('MMMM Do YYYY')}</Text>
         </View>
-        <View style={styles.subView}>
+
+        <View>
           <Text style={styles.titleText}>Order Delivery Day:</Text>
 
-          <Text>
+          <Text numberOfLines={2}>
             On {data.day} at {timeSlot}
           </Text>
         </View>
+
         <View style={styles.subView}>
           <Text style={styles.titleText}>Schedule Type:</Text>
           <Text>{data.scheduleType}</Text>

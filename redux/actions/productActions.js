@@ -29,6 +29,13 @@ export const addProducts = product => (dispatch, getState) => {
     type: 'ADD_PRODUCTS',
     payload: product,
   });
+
+  if (product.inventory === 0) {
+    dispatch({
+      type: 'REMOVE_FROM_CART',
+      id: product.id,
+    });
+  }
 };
 
 export const updateProducts = product => (dispatch, getState) => {
@@ -36,6 +43,12 @@ export const updateProducts = product => (dispatch, getState) => {
     type: 'UPDATE_PRODUCTS',
     payload: product,
   });
+  if (product.inventory === 0) {
+    dispatch({
+      type: 'REMOVE_FROM_CART',
+      id: product.id,
+    });
+  }
 };
 
 export const emptyProducts = product => (dispatch, getState) => {

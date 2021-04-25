@@ -49,6 +49,15 @@ const userReducer = (state = initState, action) => {
         address: null,
         location: null,
       };
+    case 'UPDATE_PROFILE':
+      return {
+        ...state,
+        address: action.payload.address,
+        location: {
+          lat: action.payload.lat,
+          lng: action.payload.lng,
+        },
+      };
     default:
       return state;
   }

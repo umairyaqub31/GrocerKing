@@ -62,6 +62,6 @@ export default OrderScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
 });
