@@ -31,7 +31,7 @@ const ProfileScreen = ({navigation}) => {
     address: '',
     check_addresstextInputChange: false,
   });
-  console.log(data.name);
+  console.log(user.isAnonymous);
 
   useEffect(() => {
     setData({
@@ -79,74 +79,99 @@ const ProfileScreen = ({navigation}) => {
       </View>
       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
         <ScrollView>
-          <Text style={styles.text_footer}>Name</Text>
-          <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
-            <TextInput
-              // placeholder="Your name"
-              editable={false}
-              value={data.name}
-              style={styles.textInput}
-              autoCapitalize="none"
-              onChangeText={val => textInputChange(val, 'name')}
-            />
-            {data.check_nametextInputChange ? (
-              <Animatable.View animation="bounceIn">
-                <Feather name="check-circle" color="green" size={20} />
-              </Animatable.View>
-            ) : null}
-          </View>
-
-          <Text
-            style={[
-              styles.text_footer,
-              {
-                marginTop: 35,
-              },
-            ]}>
-            Delivery Address
-          </Text>
-          <View style={styles.action}>
-            <FontAwesome name="address-card-o" color="#05375a" size={20} />
-            <TextInput
-              placeholder="Your adress for delivery"
-              value={data.address}
-              editable={false}
-              style={styles.textInput}
-              autoCapitalize="none"
-              onChangeText={val => textInputChange(val, 'address')}
-            />
-            {data.check_addresstextInputChange ? (
-              <Animatable.View animation="bounceIn">
-                <Feather name="check-circle" color="green" size={20} />
-              </Animatable.View>
-            ) : null}
-            <TouchableOpacity
-              onPress={() => navigation.navigate('EditLocation')}>
-              <Icon1 name="edit" size={25} />
-            </TouchableOpacity>
-          </View>
+          {user !== null && user.isAnonymous ? (
+            <Text>Cannot change profile because you are Guest user.</Text>
+          ) : (
+            <>
+              <Text style={styles.text_footer}>Name</Text>
+              <View style={styles.action}>
+                <FontAwesome name="user-o" color="#05375a" size={20} />
+                <TextInput
+                  // placeholder="Your name"
+                  editable={false}
+                  value={data.name}
+                  style={styles.textInput}
+                  autoCapitalize="none"
+                  onChangeText={val => textInputChange(val, 'name')}
+                />
+                {data.check_nametextInputChange ? (
+                  <Animatable.View animation="bounceIn">
+                    <Feather name="check-circle" color="green" size={20} />
+                  </Animatable.View>
+                ) : null}
+              </View>
+              <Text
+                style={[
+                  styles.text_footer,
+                  {
+                    marginTop: 35,
+                  },
+                ]}>
+                Delivery Address
+              </Text>
+              <View style={styles.action}>
+                <FontAwesome name="address-card-o" color="#05375a" size={20} />
+                <TextInput
+                  placeholder="Your adress for delivery"
+                  value={address}
+                  editable={false}
+                  style={styles.textInput}
+                  autoCapitalize="none"
+                  onChangeText={val => textInputChange(val, 'address')}
+                />
+                {data.check_addresstextInputChange ? (
+                  <Animatable.View animation="bounceIn">
+                    <Feather name="check-circle" color="green" size={20} />
+                  </Animatable.View>
+                ) : null}
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('EditLocation')}>
+                  <Icon1 name="edit" size={25} />
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
 
           <View style={styles.button}>
-            <TouchableOpacity
-              style={styles.signIn}
-              onPress={() =>
-                navigation.navigate('PickLocationScreen', {data: data})
-              }>
-              <LinearGradient
-                colors={[Colors.primaryLight, Colors.primary]}
-                style={styles.signIn}>
-                <Text
-                  style={[
-                    styles.textSign,
-                    {
-                      color: '#fff',
-                    },
-                  ]}>
-                  Proceed
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
+            {user !== null && user.isAnonymous ? (
+              <TouchableOpacity
+                style={styles.signIn}
+                onPress={() => navigation.navigate('Home')}>
+                <LinearGradient
+                  colors={[Colors.primaryLight, Colors.primary]}
+                  style={styles.signIn}>
+                  <Text
+                    style={[
+                      styles.textSign,
+                      {
+                        color: '#fff',
+                      },
+                    ]}>
+                    Go Back
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.signIn}
+                onPress={() =>
+                  navigation.navigate('PickLocationScreen', {data: data})
+                }>
+                <LinearGradient
+                  colors={[Colors.primaryLight, Colors.primary]}
+                  style={styles.signIn}>
+                  <Text
+                    style={[
+                      styles.textSign,
+                      {
+                        color: '#fff',
+                      },
+                    ]}>
+                    Proceed
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
           </View>
         </ScrollView>
       </Animatable.View>

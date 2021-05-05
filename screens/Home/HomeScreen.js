@@ -45,6 +45,7 @@ import Splash from '../Splash';
 import {sortBy} from 'underscore';
 import messaging from '@react-native-firebase/messaging';
 import axios from 'axios';
+import FeedBackComponent from '../../components/feedBackComponent';
 
 const HomeScreen = ({navigation}) => {
   const {colors} = useTheme();
@@ -351,14 +352,17 @@ const HomeScreen = ({navigation}) => {
             <ActivityIndicator size={'large'} />
           </View>
         ) : (
-          <FlatList
-            data={sortedCategories}
-            removeClippedSubviews={true}
-            windowSize={5}
-            updateCellsBatchingPeriod={100}
-            renderItem={renderItem1}
-            keyExtractor={keyExtractor1}
-          />
+          <>
+            <FlatList
+              data={sortedCategories}
+              removeClippedSubviews={true}
+              windowSize={5}
+              updateCellsBatchingPeriod={100}
+              renderItem={renderItem1}
+              keyExtractor={keyExtractor1}
+            />
+            <FeedBackComponent />
+          </>
         )}
       </View>
     </ScrollView>

@@ -22,6 +22,8 @@ import firestore from '@react-native-firebase/firestore';
 import {isPointInPolygon} from 'geolib';
 import {updateProfile} from '../redux/actions/profileActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {Colors} from '../styles';
+import {setLocationAddress} from '../redux/actions/userAction';
 
 const ProfileLocationScreen = props => {
   const [location, setLocation] = useState(null);
@@ -29,11 +31,11 @@ const ProfileLocationScreen = props => {
   const {navigation} = props;
   const user = useSelector(state => state.user.user);
   const loc = useSelector(state => state.user.location);
-  const address = useSelector(state => state.user.address);
+  const addr = useSelector(state => state.user.address);
   const dispatch = useDispatch();
   const signedUp = useSelector(state => state.user.signedUp);
   const [loading, setLoading] = useState(false);
-  const [addr, setAddr] = useState(address);
+  const [address, setAddress] = useState(null);
   const mapRef = useRef();
 
   const onRegionChange = region => {
@@ -46,6 +48,7 @@ const ProfileLocationScreen = props => {
   useEffect(() => {
     console.log('loc', loc);
     setLocation(loc);
+    setAddress(addr);
   }, []);
 
   const gotToMyLocation = () => {
@@ -66,13 +69,13 @@ const ProfileLocationScreen = props => {
           );
         }
       },
-      // error => alert('Error: Are location services on?'),
-      // {enableHighAccuracy: true},
+      // error => console.log(error),
+      // {enableHighAccuracy: false},
     );
   };
   const handleChangeAddress = text => {
     console.log(text);
-    setAddr(text);
+    setAddress(text);
   };
 
   const handleUpdate = async () => {
@@ -84,7 +87,10 @@ const ProfileLocationScreen = props => {
     const poly = snapshot.data().locality;
     const locality = isPointInPolygon(latlng, poly);
     if (locality) {
-      dispatch(updateProfile(user.uid, latlng.lat, latlng.lng, addr));
+      if (user !== null) {
+        dispatch(updateProfile(user.uid, latlng.lat, latlng.lng, address));
+        navigation.navigate('Profile');
+      }
     } else {
       setLoading(false);
       Alert.alert('Location', 'Cannot Deliver to your location', [
@@ -105,8 +111,8 @@ const ProfileLocationScreen = props => {
         <MapView
           ref={mapRef}
           initialRegion={{
-            latitude: loc.lat,
-            longitude: loc.lng,
+            latitude: location.lat,
+            longitude: location.lng,
             latitudeDelta: 0.009,
             longitudeDelta: 0.009,
           }}
@@ -130,6 +136,7 @@ const ProfileLocationScreen = props => {
             paddingHorizontal: wp('4%'),
             elevation: 5,
           }}
+          value={address}
           onChangeText={text => handleChangeAddress(text)}
           placeholder={'Address'}
         />
@@ -140,7 +147,7 @@ const ProfileLocationScreen = props => {
             width: 60,
             height: 60,
             position: 'absolute',
-            top: 100,
+            bottom: 200,
             right: 20,
             borderRadius: 30,
             backgroundColor: '#d2d2d2',
@@ -149,10 +156,19 @@ const ProfileLocationScreen = props => {
           }}>
           <Icon name="location-arrow" size={30} />
         </TouchableOpacity>
+        <Text
+          style={{
+            position: 'absolute',
+            bottom: 180,
+            right: 20,
+            fontWeight: 'bold',
+          }}>
+          Auto Detect
+        </Text>
 
         <TouchableOpacity onPress={() => handleUpdate()}>
           <LinearGradient
-            colors={['#08d4c4', '#01ab9d']}
+            colors={[Colors.primary, Colors.primary]}
             style={styles.location}>
             <Text style={styles.textSign}>Confirm</Text>
           </LinearGradient>

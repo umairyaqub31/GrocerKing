@@ -19,17 +19,28 @@ import {
 } from '../../redux/actions/cartActions';
 import Icon from 'react-native-vector-icons/Feather';
 import {Image} from 'react-native-elements';
+import {Badge} from 'native-base';
 
 const ProductItem = props => {
   const {item, navigation} = props;
   const dispatch = useDispatch();
   const [Index, setIndex] = useState(-1);
   const cart = useSelector(state => state.cart.cart);
+  const [off, setOff] = useState(0);
+
   useEffect(() => {
     console.log(item);
     const index = cart.findIndex(p => p.product.id === item.id);
     setIndex(index);
   }, [cart, item.id]);
+
+  useEffect(() => {
+    if (item.sale_price !== null && item.sale_price !== '') {
+      const per = item.price - item.sale_price;
+      const perOff = (per / item.price) * 100;
+      setOff(perOff.toFixed(0));
+    }
+  });
 
   const addItem = () => {
     dispatch(addToCart(item, 1));
@@ -53,7 +64,9 @@ const ProductItem = props => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate('ProductScreen', {item: item})}>
+      onPress={() =>
+        navigation.navigate('ProductScreen', {item: item, off: off})
+      }>
       <Image
         style={styles.image}
         source={{uri: item.images[0].image}}
@@ -79,6 +92,7 @@ const ProductItem = props => {
               }}>
               RS {item.price}
             </Text>
+
             <Text
               style={{
                 marginLeft: wp('2%'),
@@ -97,6 +111,27 @@ const ProductItem = props => {
             ]}>
             RS {item.price}
           </Text>
+        )}
+
+        {off !== 0 ? (
+          <Badge
+            style={{
+              backgroundColor: '#1A237E',
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 15,
+                fontWeight: 'bold',
+              }}>
+              {off} % Off!
+            </Text>
+          </Badge>
+        ) : (
+          <View
+            style={{
+              marginTop: 31,
+            }}></View>
         )}
       </View>
 

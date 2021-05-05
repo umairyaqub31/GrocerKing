@@ -23,6 +23,7 @@ import {useDispatch} from 'react-redux';
 const marker = require('../../assets/icons8-marker.png');
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {duration} from 'moment';
+import {Colors} from '../../styles';
 
 const LocationScreen = props => {
   const [location, setLocation] = useState(null);
@@ -42,39 +43,47 @@ const LocationScreen = props => {
 
   const handleProceed = async () => {
     setLoading(true);
-    const snapshot = await firestore()
-      .collection('settings')
-      .doc('admin')
-      .get();
-    const poly = snapshot.data().locality;
-    const locality = isPointInPolygon(latlng, poly);
 
-    if (locality) {
-      auth()
-        .signInAnonymously()
-        .then(() => {
-          console.log('User signed in anonymously');
-          const obj = {
-            lat: location.coords.latitude,
-            lng: location.coords.longitude,
-          };
-          dispatch({type: 'SET_ADDRESS', payload: address});
-          dispatch({type: 'SET_LOCATION', payload: obj});
-          // setLoading(false);
-        })
-        .catch(error => {
-          if (error.code === 'auth/operation-not-allowed') {
-            console.log('Enable anonymous in your firebase console.');
-            setLoading(false);
-          }
-
-          console.error(error);
-        });
-    } else {
-      setLoading(false);
-      Alert.alert('Location', 'Cannot Deliver to your location', [
+    if (address === null) {
+      Alert.alert('Address Not Found!', 'Please enter a valid address', [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
       ]);
+      setLoading(false);
+    } else {
+      const snapshot = await firestore()
+        .collection('settings')
+        .doc('admin')
+        .get();
+      const poly = snapshot.data().locality;
+      const locality = isPointInPolygon(latlng, poly);
+
+      if (locality) {
+        auth()
+          .signInAnonymously()
+          .then(() => {
+            console.log('User signed in anonymously');
+            const obj = {
+              lat: location.coords.latitude,
+              lng: location.coords.longitude,
+            };
+            dispatch({type: 'SET_ADDRESS', payload: address});
+            dispatch({type: 'SET_LOCATION', payload: obj});
+            // setLoading(false);
+          })
+          .catch(error => {
+            if (error.code === 'auth/operation-not-allowed') {
+              console.log('Enable anonymous in your firebase console.');
+              setLoading(false);
+            }
+
+            console.error(error);
+          });
+      } else {
+        setLoading(false);
+        Alert.alert('Location', 'Cannot Deliver to your location', [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]);
+      }
     }
   };
 
@@ -171,7 +180,7 @@ const LocationScreen = props => {
             width: 60,
             height: 60,
             position: 'absolute',
-            top: 100,
+            bottom: 200,
             right: 20,
             borderRadius: 30,
             backgroundColor: '#d2d2d2',
@@ -180,10 +189,19 @@ const LocationScreen = props => {
           }}>
           <Icon name="location-arrow" size={30} />
         </TouchableOpacity>
+        <Text
+          style={{
+            position: 'absolute',
+            bottom: 180,
+            right: 20,
+            fontWeight: 'bold',
+          }}>
+          Auto Detect
+        </Text>
 
         <TouchableOpacity onPress={handleProceed}>
           <LinearGradient
-            colors={['#08d4c4', '#01ab9d']}
+            colors={[Colors.primary, Colors.primary]}
             style={styles.location}>
             <Text style={styles.textSign}>Proceed</Text>
           </LinearGradient>

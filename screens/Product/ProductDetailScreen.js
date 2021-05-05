@@ -28,6 +28,8 @@ import {
 } from '../../redux/actions/cartActions';
 import SliderView from './Slider';
 import {ScrollView} from 'react-native-gesture-handler';
+import {Badge} from 'native-base';
+
 const ProductScreen = props => {
   const {navigation, route} = props;
   const [Index, setIndex] = useState(-1);
@@ -36,6 +38,8 @@ const ProductScreen = props => {
 
   const {colors} = useTheme();
   const product = route.params;
+  const {off} = route.params;
+  console.log('offfffffffff', off);
 
   const products = useSelector(state => state.product.products);
   const wishlist = useSelector(state => state.wishlist.wishlist);
@@ -145,6 +149,7 @@ const ProductScreen = props => {
             </Text>
           )}
         </View>
+
         <View>
           {Index === -1 ? (
             <TouchableOpacity onPress={add_to_wishlist}>
@@ -157,6 +162,27 @@ const ProductScreen = props => {
           )}
         </View>
       </View>
+      {off !== 0 ? (
+        <Badge
+          style={{
+            backgroundColor: '#1A237E',
+            marginLeft: 20,
+          }}>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}>
+            {off}% Off!
+          </Text>
+        </Badge>
+      ) : (
+        <View
+          style={{
+            marginTop: 31,
+          }}></View>
+      )}
       <View style={{flex: 1, borderRadius: 5}}>
         <View>
           <Text style={styles.heading}>More Items</Text>

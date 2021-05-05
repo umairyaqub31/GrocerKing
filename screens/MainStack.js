@@ -22,6 +22,7 @@ import VoucherScreen from './Vouchers/Vouchers';
 import ProductSubListScreen from './Product/ProductSubList';
 import ProfileLocationScreen from './ProfileLocation';
 import SearchScreen from './Home/SearchScreen';
+import FeedBackScreen from './FeedBack/FeedBack';
 
 import {DrawerContent} from './DrawerContent';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -45,6 +46,7 @@ const PromotionStack = createStackNavigator();
 const OrderStack = createStackNavigator();
 const VoucherStack = createStackNavigator();
 const SearchStack = createStackNavigator();
+const FeedBackStack = createStackNavigator();
 
 const HomeStackScreen = ({navigation}) => {
   const cart = useSelector(state => state.cart.cart);
@@ -107,14 +109,14 @@ const HomeStackScreen = ({navigation}) => {
         component={ProductScreen}
         options={{
           title: 'Product',
-          headerLeft: props => (
-            <HeaderBackButton
-              {...props}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ),
+          // headerLeft: props => (
+          //   <HeaderBackButton
+          //     {...props}
+          //     onPress={() => {
+          //       navigation.goBack();
+          //     }}
+          //   />
+          // ),
           headerRight: () => (
             <>
               <Icon.Button
@@ -179,14 +181,14 @@ const HomeStackScreen = ({navigation}) => {
         component={ProductListScreen}
         options={{
           title: 'Products',
-          headerLeft: props => (
-            <HeaderBackButton
-              {...props}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ),
+          // headerLeft: props => (
+          //   <HeaderBackButton
+          //     {...props}
+          //     onPress={() => {
+          //       navigation.goBack();
+          //     }}
+          //   />
+          // ),
           headerRight: () => (
             <>
               <Icon.Button
@@ -215,14 +217,14 @@ const HomeStackScreen = ({navigation}) => {
         component={ProductSubListScreen}
         options={{
           title: 'Products',
-          headerLeft: props => (
-            <HeaderBackButton
-              {...props}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ),
+          // headerLeft: props => (
+          //   <HeaderBackButton
+          //     {...props}
+          //     onPress={() => {
+          //       navigation.goBack();
+          //     }}
+          //   />
+          // ),
           headerRight: () => (
             <>
               <Icon.Button
@@ -501,14 +503,14 @@ const CheckoutStackScreen = ({navigation}) => (
       component={CheckoutLocationScreen}
       options={{
         title: 'Set Location',
-        headerLeft: props => (
-          <HeaderBackButton
-            {...props}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        ),
+        // headerLeft: props => (
+        //   <HeaderBackButton
+        //     {...props}
+        //     onPress={() => {
+        //       navigation.goBack();
+        //     }}
+        //   />
+        // ),
       }}
     />
     <CheckoutStack.Screen
@@ -573,14 +575,14 @@ const SearchStackScreen = ({navigation}) => {
         name="Search"
         component={SearchScreen}
         options={{
-          headerLeft: props => (
-            <HeaderBackButton
-              {...props}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ),
+          // headerLeft: props => (
+          //   <HeaderBackButton
+          //     {...props}
+          //     onPress={() => {
+          //       navigation.goBack();
+          //     }}
+          //   />
+          // ),
           headerRight: () => (
             <>
               <Icon.Button
@@ -713,14 +715,14 @@ const OrderStackScreen = ({navigation}) => {
         component={OrderDetailsScreen}
         options={{
           title: 'Order Details',
-          headerLeft: props => (
-            <HeaderBackButton
-              {...props}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ),
+          // headerLeft: props => (
+          //   <HeaderBackButton
+          //     {...props}
+          //     onPress={() => {
+          //       navigation.navigate('Orders');
+          //     }}
+          //   />
+          // ),
           headerRight: () => (
             <>
               <Icon.Button
@@ -775,6 +777,44 @@ const VoucherStackScreen = ({navigation}) => (
   </VoucherStack.Navigator>
 );
 
+const FeedBackStackScreen = ({navigation}) => (
+  <FeedBackStack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: Colors.primary,
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}>
+    <FeedBackStack.Screen
+      name="Feedback"
+      component={FeedBackScreen}
+      options={{
+        headerLeft: () => (
+          <Icon.Button
+            name="ios-menu"
+            size={25}
+            backgroundColor={Colors.primary}
+            onPress={() => navigation.openDrawer()}
+          />
+        ),
+        headerRight: () => (
+          <>
+            <Icon.Button
+              name="ios-cart-outline"
+              size={25}
+              backgroundColor={Colors.primary}
+              onPress={() => navigation.navigate('Cart')}
+            />
+          </>
+        ),
+      }}
+    />
+  </FeedBackStack.Navigator>
+);
+
 const MainStack = () => {
   return (
     <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
@@ -791,6 +831,7 @@ const MainStack = () => {
       <Drawer.Screen name="Orders" component={OrderStackScreen} />
       <Drawer.Screen name="Vouchers" component={VoucherStackScreen} />
       <Drawer.Screen name="Search" component={SearchStackScreen} />
+      <Drawer.Screen name="FeedBack" component={FeedBackStackScreen} />
     </Drawer.Navigator>
   );
 };

@@ -14,6 +14,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
+import {Colors} from '../../styles';
+
 const CartScreen = ({navigation}) => {
   const [Data, setData] = useState([
     {name: 'Potato1', price: '50', id: 1},
@@ -40,28 +43,29 @@ const CartScreen = ({navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      <View>
+      <View style={{paddingBottom: 60}}>
         <FlatList
           data={cart}
           renderItem={({item}) => <Item item={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-      <View style={styles.buttonView}>
-        {/* <TouchableOpacity
-          style={[styles.button, {backgroundColor: '#939ba4'}]}
-          onPress={close}>
-          <Text style={styles.btnText}>Close</Text>
-        </TouchableOpacity> */}
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {paddingHorizontal: wp('17%'), backgroundColor: '#1A237E'},
-          ]}
-          onPress={handleCheckout}>
+
+      {/* <TouchableOpacity
+        style={{alignSelf: 'center', bottom: 10}}
+        onPress={handleCheckout}>
+        <Text style={styles.btnText}>Go To Check Out</Text>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity
+        style={{alignSelf: 'center', position: 'absolute', bottom: 10}}
+        onPress={handleCheckout}>
+        <LinearGradient
+          colors={[Colors.primaryLight, Colors.primary]}
+          style={styles.orderBtn}>
           <Text style={styles.btnText}>Go To Check Out</Text>
-        </TouchableOpacity>
-      </View>
+        </LinearGradient>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -83,6 +87,17 @@ const styles = StyleSheet.create({
     //   borderRadius: 100,
     // flexDirection: 'row',
     paddingHorizontal: wp('7%'),
+  },
+  orderBtn: {
+    width: wp('90%'),
+    height: hp('5.5%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    // borderRadius: 50,
+    // flexDirection: 'row',
+    alignSelf: 'center',
+    elevation: 5,
+    // marginBottom: hp('5%'),
   },
   button: {
     padding: 15,

@@ -74,7 +74,9 @@ const Item = props => {
         )}
       </>
       <TouchableOpacity
-        onPress={() => navigation.navigate('ProductScreen', {item: item})}>
+        onPress={() =>
+          navigation.navigate('ProductScreen', {item: item, off: off})
+        }>
         <View style={styles.imageView}>
           <FastImage
             style={styles.image}

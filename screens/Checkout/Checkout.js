@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {Component, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Platform,
-  Button,
   TextInput,
   ActivityIndicator,
   Alert,
@@ -22,7 +21,6 @@ import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Icon3 from 'react-native-vector-icons/Feather';
 import RadioButtonRN from 'radio-buttons-react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
@@ -77,6 +75,7 @@ const CheckoutScreen = ({navigation}) => {
   const [funds, setFunds] = useState(0);
   const [cashback, setcashback] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [showCashback, setShowCashback] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -105,6 +104,19 @@ const CheckoutScreen = ({navigation}) => {
       setFunds(0);
     }
   };
+
+  useEffect(() => {
+    firestore()
+      .collection('orders')
+      .where('user_id', '==', user.uid)
+      .limit(1)
+      .get()
+      .then(snapshot => {
+        if (snapshot.docs.length > 0) {
+          setShowCashback(false);
+        }
+      });
+  });
 
   useEffect(() => {
     if (orderData !== null) {
@@ -249,7 +261,7 @@ const CheckoutScreen = ({navigation}) => {
     if (cb > 1000) {
       setcashback(1000);
     } else {
-      setcashback(cb);
+      setcashback(cb.toFixed(0));
     }
 
     if (tot >= 2000) {
@@ -448,10 +460,12 @@ const CheckoutScreen = ({navigation}) => {
             <Text>{funds}</Text>
           </View>
 
-          <View style={styles.totalSubView}>
-            <Text>CashBack</Text>
-            <Text>{cashback}</Text>
-          </View>
+          {showCashback && (
+            <View style={styles.totalSubView}>
+              <Text>CashBack</Text>
+              <Text>{cashback}</Text>
+            </View>
+          )}
 
           <View style={styles.totalSubView}>
             <Text>Total Discount</Text>

@@ -5,6 +5,7 @@ const initState = {
   signedUp: false,
   address: null,
   location: null,
+  profileLoading: false,
 };
 
 const userReducer = (state = initState, action) => {
@@ -49,6 +50,12 @@ const userReducer = (state = initState, action) => {
         address: null,
         location: null,
       };
+
+    case 'PROFILE_LOADING':
+      return {
+        ...state,
+        profileLoading: true,
+      };
     case 'UPDATE_PROFILE':
       return {
         ...state,
@@ -57,6 +64,7 @@ const userReducer = (state = initState, action) => {
           lat: action.payload.lat,
           lng: action.payload.lng,
         },
+        profileLoading: false,
       };
     default:
       return state;

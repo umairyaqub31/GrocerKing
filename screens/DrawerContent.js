@@ -15,6 +15,7 @@ import {
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 
@@ -134,6 +135,17 @@ export function DrawerContent(props) {
                 props.navigation.navigate('Orders');
               }}
             />
+
+            <DrawerItem
+              icon={({color, size}) => (
+                <MaterialIcons name="feedback" color={color} size={size} />
+              )}
+              label="Feedbacks"
+              onPress={() => {
+                props.navigation.navigate('FeedBack');
+              }}
+            />
+
             {/* <DrawerItem
               icon={({color, size}) => (
                 <Icon name="bookmark-outline" color={color} size={size} />

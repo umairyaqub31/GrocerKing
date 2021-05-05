@@ -20,6 +20,8 @@ import {SignUp} from '../../redux/actions/authActions';
 const marker = require('../../assets/icons8-marker.png');
 import {Image} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {Colors} from '../../styles';
+import {setLocationAddress} from '../../redux/actions/userAction';
 
 const CheckoutLocationScreen = props => {
   const [location, setLocation] = useState(null);
@@ -28,6 +30,9 @@ const CheckoutLocationScreen = props => {
   const user = useSelector(state => state.user.user);
   const dispatch = useDispatch();
   const signedUp = useSelector(state => state.user.signedUp);
+  const loc = useSelector(state => state.user.location);
+  const addr = useSelector(state => state.user.address);
+  const [address, setAddress] = useState(null);
 
   const mapRef = useRef();
 
@@ -39,7 +44,7 @@ const CheckoutLocationScreen = props => {
   };
 
   const gotToMyLocation = () => {
-    console.log(mapRef);
+    console.log('Ref', mapRef);
     Geolocation.getCurrentPosition(
       ({coords}) => {
         console.log('curent location: ', coords);
@@ -61,7 +66,26 @@ const CheckoutLocationScreen = props => {
     );
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log('loccccccc', loc);
+    setLocation(loc);
+    setAddress(addr);
+  }, []);
+
+  const onChangeAddress = text => {
+    setAddress(text);
+  };
+
+  const handleConfirm = () => {
+    if (address === null || address === '') {
+      Alert.alert('Address Not Found!', 'Please enter a valid address', [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]);
+    } else {
+      dispatch(setLocationAddress(address, location));
+      navigation.navigate('Checkout');
+    }
+  };
 
   if (location === null || location === undefined) {
     return (
@@ -75,8 +99,8 @@ const CheckoutLocationScreen = props => {
         <MapView
           ref={mapRef}
           initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: location.lat,
+            longitude: location.lng,
             latitudeDelta: 0.009,
             longitudeDelta: 0.009,
           }}
@@ -100,7 +124,8 @@ const CheckoutLocationScreen = props => {
             paddingHorizontal: wp('4%'),
             elevation: 5,
           }}
-          // onChangeText={onChangeText}
+          value={address}
+          onChangeText={text => onChangeAddress(text)}
           placeholder={'Address'}
         />
 
@@ -110,7 +135,7 @@ const CheckoutLocationScreen = props => {
             width: 60,
             height: 60,
             position: 'absolute',
-            top: 100,
+            bottom: 200,
             right: 20,
             borderRadius: 30,
             backgroundColor: '#d2d2d2',
@@ -119,10 +144,19 @@ const CheckoutLocationScreen = props => {
           }}>
           <Icon name="location-arrow" size={30} />
         </TouchableOpacity>
+        <Text
+          style={{
+            position: 'absolute',
+            bottom: 180,
+            right: 20,
+            fontWeight: 'bold',
+          }}>
+          Auto Detect
+        </Text>
 
-        <TouchableOpacity onPress={() => console.log('Pressed')}>
+        <TouchableOpacity onPress={handleConfirm}>
           <LinearGradient
-            colors={['#08d4c4', '#01ab9d']}
+            colors={[Colors.primary, Colors.primary]}
             style={styles.location}>
             <Text style={styles.textSign}>Confirm</Text>
           </LinearGradient>

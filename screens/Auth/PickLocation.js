@@ -141,7 +141,7 @@ const PickLocationScreen = props => {
             width: 60,
             height: 60,
             position: 'absolute',
-            top: 100,
+            bottom: 200,
             right: 20,
             borderRadius: 30,
             backgroundColor: '#d2d2d2',
@@ -150,6 +150,15 @@ const PickLocationScreen = props => {
           }}>
           <Icon name="location-arrow" size={30} />
         </TouchableOpacity>
+        <Text
+          style={{
+            position: 'absolute',
+            bottom: 180,
+            right: 20,
+            fontWeight: 'bold',
+          }}>
+          Auto Detect
+        </Text>
       </View>
     );
   }
