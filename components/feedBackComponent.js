@@ -51,6 +51,8 @@ const FeedBackComponent = props => {
     Alert.alert(`FeedBack ${res.data}!`, 'Thanks for your feedBack.', [
       {text: 'OK', onPress: () => console.log('OK Pressed')},
     ]);
+    setSelected(-1);
+    setMessage('');
   };
 
   const onSubmit = () => {
@@ -83,6 +85,7 @@ const FeedBackComponent = props => {
         placeholder="For any quries let us know"
         onChangeText={text => setMessage(text)}
         multiline={true}
+        value={message}
         numberOfLines={5}
       />
 

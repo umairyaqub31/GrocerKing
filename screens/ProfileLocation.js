@@ -80,22 +80,29 @@ const ProfileLocationScreen = props => {
 
   const handleUpdate = async () => {
     setLoading(true);
-    const snapshot = await firestore()
-      .collection('settings')
-      .doc('admin')
-      .get();
-    const poly = snapshot.data().locality;
-    const locality = isPointInPolygon(latlng, poly);
-    if (locality) {
-      if (user !== null) {
-        dispatch(updateProfile(user.uid, latlng.lat, latlng.lng, address));
-        navigation.navigate('Profile');
-      }
-    } else {
-      setLoading(false);
-      Alert.alert('Location', 'Cannot Deliver to your location', [
+    if (address === null || address === '') {
+      Alert.alert('Address not found!', 'Please enter avalid address', [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
       ]);
+      setLoading(false);
+    } else {
+      const snapshot = await firestore()
+        .collection('settings')
+        .doc('admin')
+        .get();
+      const poly = snapshot.data().locality;
+      const locality = isPointInPolygon(latlng, poly);
+      if (locality) {
+        if (user !== null) {
+          dispatch(updateProfile(user.uid, latlng.lat, latlng.lng, address));
+          navigation.navigate('Profile');
+        }
+      } else {
+        setLoading(false);
+        Alert.alert('Location', 'Cannot Deliver to your location', [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]);
+      }
     }
   };
 

@@ -197,6 +197,7 @@ const CheckoutScreen = ({navigation}) => {
       };
 
       const body = {
+        userName: user.displayName,
         cart,
         user_id: user.uid,
         user_phoneNo: user.phoneNumber,
