@@ -15,7 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {isPointInPolygon} from 'geolib';
+import {isPointInPolygon,isPointWithinRadius} from 'geolib';
 import firestore from '@react-native-firebase/firestore';
 import {useDispatch, useSelector} from 'react-redux';
 import {SignUp} from '../../redux/actions/authActions';
@@ -45,7 +45,16 @@ const PickLocationScreen = props => {
       .doc('admin')
       .get();
     const poly = snapshot.data().locality;
-    const locality = isPointInPolygon(latlng, poly);
+    let locality = false;
+    poly.map(circle => {
+      let temp = isPointWithinRadius(location,{
+        latitude:circle.lat,
+        longitude: circle.lng,
+      }, circle.radius);
+      if(temp === true) {
+        locality = true;
+      }
+    })
     if (locality) {
       dispatch(SignUp(props.route.params.data, user.uid, latlng));
     } else {

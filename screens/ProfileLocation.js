@@ -19,7 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 const marker = require('../assets/icons8-marker.png');
 import {Image} from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
-import {isPointInPolygon} from 'geolib';
+import {isPointInPolygon, isPointWithinRadius} from 'geolib';
 import {updateProfile} from '../redux/actions/profileActions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Colors} from '../styles';
@@ -91,7 +91,16 @@ const ProfileLocationScreen = props => {
         .doc('admin')
         .get();
       const poly = snapshot.data().locality;
-      const locality = isPointInPolygon(latlng, poly);
+      let locality = false;
+    poly.map(circle => {
+      let temp = isPointWithinRadius(location,{
+        latitude:circle.lat,
+        longitude: circle.lng,
+      }, circle.radius);
+      if(temp === true) {
+        locality = true;
+      }
+    })
       if (locality) {
         if (user !== null) {
           dispatch(updateProfile(user.uid, latlng.lat, latlng.lng, address));

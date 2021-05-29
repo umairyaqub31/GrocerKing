@@ -23,6 +23,7 @@ import {Badge} from 'native-base';
 const Item = props => {
   const {navigation, item} = props;
   let image = item.images[0].image;
+  console.log('image.....', image);
   const [Index, setIndex] = useState(-1);
   const [off, setOff] = useState(0);
   const dispatch = useDispatch();

@@ -17,7 +17,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import auth from '@react-native-firebase/auth';
-import {isPointInPolygon} from 'geolib';
+import {isPointInPolygon, isPointWithinRadius} from 'geolib';
 import firestore from '@react-native-firebase/firestore';
 import {useDispatch} from 'react-redux';
 const marker = require('../../assets/icons8-marker.png');
@@ -55,8 +55,16 @@ const LocationScreen = props => {
         .doc('admin')
         .get();
       const poly = snapshot.data().locality;
-      const locality = isPointInPolygon(latlng, poly);
-
+      let locality = false;
+    poly.map(circle => {
+      let temp = isPointWithinRadius(location,{
+        latitude:circle.lat,
+        longitude: circle.lng,
+      }, circle.radius);
+      if(temp === true) {
+        locality = true;
+      }
+    })
       if (locality) {
         auth()
           .signInAnonymously()

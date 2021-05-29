@@ -22,6 +22,8 @@ import {Image} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Colors} from '../../styles';
 import {setLocationAddress} from '../../redux/actions/userAction';
+import {isPointInPolygon, isPointWithinRadius} from 'geolib';
+import firestore from '@react-native-firebase/firestore';
 
 const CheckoutLocationScreen = props => {
   const [location, setLocation] = useState(null);
@@ -76,14 +78,37 @@ const CheckoutLocationScreen = props => {
     setAddress(text);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (address === null || address === '') {
       Alert.alert('Address Not Found!', 'Please enter a valid address', [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
       ]);
     } else {
+      const snapshot = await firestore()
+        .collection('settings')
+        .doc('admin')
+        .get();
+      const poly = snapshot.data().locality;
+      let locality = false;
+    poly.map(circle => {
+      let temp = isPointWithinRadius(location,{
+        latitude:circle.lat,
+        longitude: circle.lng,
+      }, circle.radius);
+      if(temp === true) {
+        locality = true;
+      }
+    })
+
+    if (locality) {
       dispatch(setLocationAddress(address, location));
       navigation.navigate('Checkout');
+    } else {
+      setLoading(false);
+      Alert.alert('Location', 'Cannot Deliver to your location', [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]);
+    }
     }
   };
 
